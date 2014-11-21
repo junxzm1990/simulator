@@ -1,0 +1,12 @@
+Step 1:
+$ git add .
+
+Step 2:
+$ git commit -m "the commit information"
+
+Step 3:
+$ git push origin master
+
+(username and password required)
+(username: junxzm1990)
+(password: 828810xiaomi)

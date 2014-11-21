@@ -103,10 +103,12 @@ class STree:
 		# if results.count(True) != 1:
 		# 	print 'number of True error: ', results
 		
+		print 'RESULT is: ', results
 		pointer = root
 		# print results
 		for res_each in results:
 			if res_each == True:
+				print 'GET INTO THE NEXT LAYER'
 				if self.rec_tree_search(predicates, value, var, pointer.fchild) == False:
 					self.search_finalpath.extend(pointer.finalpath)
 			pointer = pointer.sibling
