@@ -86,20 +86,11 @@ def notpy(val):
 	if not check2(val):	
 		sys.exit(1)
 
-	
+	exp=len(val)-2	
+	maxval = pow(2, exp) - 1
 
-#	exp=len(val)-2	
-#	maxval = pow(2, exp) - 1
-
-	
-	if int2(val)!=0:
-		return binary(0, len(val)-2)
-	else:
-		return binary(1, len(val)-2)
-
-
-#	notval = maxval - int2(val)
-#	return binary(notval, len(val)-2)	
+	notval = maxval - int2(val)
+	return binary(notval, len(val)-2)	
 
 ##############################
 def andpy(val1, val2):
@@ -265,34 +256,20 @@ def bvsubpy(val1, val2, val3):
 ###################################################
 def pre_process_input(val):
 	if type(val) is list:
-		varlist=[]
-
 		for i in range(0, len(val)):
-			varlist.append(binary(val[i], 8))
-
-		return varlist
-	
+			val[i] = binary(val[i], 8)	
 	else:
-		vardata = binary(val, 8)
-		return vardata	
+		val = binary(val, 8)	
 
 
 def  match_predicate(predicate, args):
-	print predicate
 	for k, v in args.items():
 		print k
 		print v
-		var = pre_process_input(v)
+		pre_process_input(v)
 #		print v
-		exec(k+"=var")
+		exec(k+"=v")
 	predicate = 'print  bool(int2(' + predicate +'))'
-
-	# predicate = '''result = bool(int2(' + predicate +'))
-	# print result
-	# with open('/home/spark/workspace/newversion', 'a') as handle:
-	# 	handle.write(str(result) + '\n')
-	# '''
-
 	exec(predicate)
 
 

@@ -1,0 +1,244 @@
+
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000006]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x0000000C]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x0000000A]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x0000000B]
+))) )
+True
+ASSERT( (0x0A = SymClient_0x37fc490[0x0000000E]
+) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x0000000D]
+))) )
+True
+ASSERT( (0x20 = SymClient_0x37fc490[0x00000000]
+) )
+False
+ASSERT( (0x2F = SymClient_0x37fc490[0x00000007]
+) )
+False
+ASSERT( (0x20 = SymClient_0x37fc490[0x00000004]
+) )
+False
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000007]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000009]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000008]
+))) )
+True
+ASSERT( (0x2F = SymClient_0x37fc490[0x00000006]
+) )
+False
+ASSERT( (0x2F = SymClient_0x37fc490[0x0000000A]
+) )
+False
+ASSERT( (0x2E = SymClient_0x37fc490[0x0000000B]
+) )
+False
+ASSERT( (0x2F = SymClient_0x37fc490[0x00000009]
+) )
+False
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000006]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000006]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x0000000A]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x0000000B]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x0000000C]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x0000000D]
+))) )
+True
+ASSERT( (0x0A = SymClient_0x37fc490[0x00000009]
+) )
+False
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x0000000A]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x0000000B]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x0000000C]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x0000000D]
+))) )
+True
+ASSERT( (0x0A = SymClient_0x37fc490[0x0000000F]
+) )
+False
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000007]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000009]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000007]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000009]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000005]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000005]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x0000000F]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x0000000F]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000005]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000004]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000004]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000004]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000002]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000002]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000002]
+))) )
+True
+ASSERT( (0x0A = SymClient_0x37fc490[0x00000008]
+) )
+False
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000008]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000008]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000003]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000003]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000003]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000001]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000001]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000001]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x00000000]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x00000000]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x00000000]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x0000000F]
+))) )
+True
+ASSERT( ( NOT( (0x0D = SymClient_0x37fc490[0x0000000E]
+))) )
+True
+ASSERT( ( NOT( (0x00 = SymClient_0x37fc490[0x0000000E]
+))) )
+True
+ASSERT( ( NOT( (0x0A = SymClient_0x37fc490[0x0000000E]
+))) )
+False
+ASSERT( ( NOT( (0x20 = SymClient_0x37fc490[0x00000006]
+))) )
+True
+ASSERT( (0x20 = SymClient_0x37fc490[0x00000005]
+) )
+False
+ASSERT( ( NOT( (0x2F = SymClient_0x37fc490[0x00000006]
+))) )
+True
+ASSERT( (0x20 = SymClient_0x37fc490[0x00000008]
+) )
+False
+ASSERT( (0x20 = SymClient_0x37fc490[0x00000003]
+) )
+False
+ASSERT( ( NOT( (0x20 = SymClient_0x37fc490[0x00000007]
+))) )
+True
+ASSERT( ( NOT( (0x2F = SymClient_0x37fc490[0x00000007]
+))) )
+True
+ASSERT( ( NOT( (0x20 = SymClient_0x37fc490[0x0000000C]
+))) )
+True
+ASSERT( ( NOT( (0x2F = SymClient_0x37fc490[0x0000000C]
+))) )
+True
+ASSERT( ( NOT( (0x20 = SymClient_0x37fc490[0x00000009]
+))) )
+True
+ASSERT( ( NOT( (0x2F = SymClient_0x37fc490[0x00000009]
+))) )
+True
+ASSERT( ( NOT( (0x20 = SymClient_0x37fc490[0x00000008]
+))) )
+True
+ASSERT( ( NOT( (0x2F = SymClient_0x37fc490[0x00000008]
+))) )
+True
+ASSERT( (0x47 = SymClient_0x37fc490[0x00000000]
+) )
+False
+ASSERT( (0x0A = SymClient_0x37fc490[0x0000000D]
+) )
+False
+ASSERT( ( NOT( (0x20 = SymClient_0x37fc490[0x0000000A]
+))) )
+True
+ASSERT( (0x20 = SymClient_0x37fc490[0x00000001]
+) )
+False
+ASSERT( (0x2F = SymClient_0x37fc490[0x0000000C]
+) )
+False
+ASSERT( (0x0A = SymClient_0x37fc490[0x0000000C]
+) )
+False
+ASSERT( (0x2F = SymClient_0x37fc490[0x0000000B]
+) )
+False
+ASSERT( (0x0A = SymClient_0x37fc490[0x0000000B]
+) )
+False
+ASSERT( (0x0A = SymClient_0x37fc490[0x0000000A]
+) )
+False

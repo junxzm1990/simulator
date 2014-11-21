@@ -72,6 +72,7 @@ class STree:
 			return False
 
 	def tree_search(self, predicates, value, var):
+		# print predicates[0:10]
 		self.searchcount = 0
 		self.search_finalpath = []
 		self.pretable = dict()
@@ -79,6 +80,7 @@ class STree:
 
 	def rec_tree_search(self, predicates, value, var, root):
 		# print 'inside rec_tree_search'
+		# print 'root predicate: ', predicates[root.predicate]
 		results = []
 		pointer = root
 		if pointer is None:

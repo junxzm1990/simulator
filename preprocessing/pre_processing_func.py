@@ -18,8 +18,8 @@ def generate_python_predicate(sourcefile, destinationfile):
 	cvc_predicates=load_predicate(sourcefile)
 	pyfunctions = []
 	for each in cvc_predicates:
-		pyfunctions.append((each[0], cvc_to_python.cvc_translate(each[1])))
-	print pyfunctions
+		pyfunctions.append((each[0], cvc_to_python.cvc_translate(each[1].replace('A-data', 'A_data'))))
+	# print pyfunctions
 	save_predicate(destinationfile, pyfunctions)
 
 
