@@ -1,7 +1,8 @@
 import os
 import cPickle as pickle
-import datetime as datetime
+from datetime import datetime
 import sys
+import random
 sys.path.append('/home/spark/workspace/github_simulator/preprocessing')
 from build_tree import TNode
 from build_tree import STree
@@ -100,17 +101,21 @@ class Simulator:
 	# conduct test on all testfiles in stosam diir, and collect statistics. (ramdomly select 2000 if files are too many)
 	def testdata_all(self):
 		testfilelist = os.listdir(self.testpath)
+		if len(testfilelist) > 2000:
+			testfilelist = random.sample(list(testfilelist), 2000)
 		stime = datetime.now()
 		for each in testfilelist:
-			with open(testfilelist + '/' + each, 'r') as handle:
+			with open(self.testpath + '/' + each, 'r') as handle:
 				if self.signature == 'xhttpd':
 					self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
 				else:
 					self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+				print self.search_tree.search_finalpath
 		etime = datetime.now()
 
-		print (etime - stime).total_seconds() / len(testfilelist)
+		print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
 
 
-sim = Simulator('openaes')
-print sim.testdata_single('test000003.pc')
+sim = Simulator('lzfx')
+# print sim.testdata_single('test000003.pc')
+sim.testdata_all()

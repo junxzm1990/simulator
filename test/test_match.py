@@ -48,7 +48,7 @@ def test_predicates(pypredicatepath,testcasepath):
 			print pypredicate
 
 
-			cvc_function_in_python.match_predicate(pypredicate, variables)	
+			print "this is the results of test:" + str(cvc_function_in_python.match_predicate(pypredicate, variables)) + '******************************'	
 			cnt+=1
 
 	end = datetime.now()

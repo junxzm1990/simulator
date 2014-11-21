@@ -38,10 +38,10 @@ def eqpy(val1, val2):
 	maxlen = max (len(val1)-2, len(val2)-2)
 	if int2(val1) == int2(val2):
 	
-		print 'equal: ' + binary(1,maxlen)
+		# print 'equal: ' + binary(1,maxlen)
 		return binary(1, maxlen)
 	else:
-		print 'not equal: ' + binary(0,maxlen) 
+		# print 'not equal: ' + binary(0,maxlen) 
 		return binary(0, maxlen)
 	
 
@@ -64,7 +64,7 @@ def extractpy(val1, val2, val3):
 	else:
 		val=val1[-end-1:-start]
 
-	print '0b'+val
+	# print '0b'+val
 
 	return '0b'+val
 	
@@ -278,14 +278,16 @@ def pre_process_input(val):
 
 
 def  match_predicate(predicate, args):
-	print predicate
+	# print predicate
 	for k, v in args.items():
-		print k
-		print v
+		# print k
+		# print v
 		var = pre_process_input(v)
 #		print v
 		exec(k+"=var")
-	predicate = 'print  bool(int2(' + predicate +'))'
+
+	result=None
+	predicate = 'result = bool(int2(' + predicate +'))'
 
 	# predicate = '''result = bool(int2(' + predicate +'))
 	# print result
@@ -294,7 +296,7 @@ def  match_predicate(predicate, args):
 	# '''
 
 	exec(predicate)
-
+	return result
 
 
 
