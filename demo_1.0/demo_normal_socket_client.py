@@ -1,0 +1,119 @@
+import socket
+import sys
+sys.path.append('/home/spark/workspace/github_simulator')
+sys.path.append('/home/spark/workspace/github_simulator/preprocessing')
+import Simulator
+from build_tree import TNode
+from build_tree import STree
+import os
+import time
+from datetime import datetime
+
+def type_convert_ip(value):
+	temp = value.split('.')
+	for index, each in enumerate(temp):
+		temp[index] = int(each)
+	for i in range(0, 128-4):
+		temp.append(0)
+	print 'IP: ', value
+	print temp
+	return temp
+
+def type_convert_string(value):
+	return [int(each) for each in value]
+
+def child(sim_xhttpd, connectip, data):
+	print '\n\n'
+	print 'SIMULATION BEGIN'
+	with open('/home/spark/workspace/spark/code_1024/currentIP', 'r') as handle:
+		sersymip = handle.readline()
+
+	converted_sersymip = type_convert_ip(sersymip)
+	converted_connectip = type_convert_ip(connectip)
+	conveted_data = type_convert_string(data)
+
+	stime = datetime.now()
+
+	paths = sim_xhttpd.simulate([converted_sersymip, converted_connectip, conveted_data])
+	etime = datetime.now()
+	pathdir = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/cleaneffects/'
+	for each in paths:
+		lines = []
+		with open(pathdir+each.split('.')[0]+'.pc', 'r') as handle:
+			lines = handle.readlines()
+		print '++++++++++++++++++++++++'
+		print 'type action effect: '
+		for eachline in lines:
+			print eachline
+		print '++++++++++++++++++++++++'
+		for line in lines:
+			if 'unlink' in line:
+				print '============================='
+				print 'instantiation effect for unlink: '
+				print 'sersymip: ', sersymip
+				print 'connectip: ', connectip
+				print 'symclient: ', symclient
+				print 'file to be deleted: ', symclient.split(':) ')[1]
+				print '============================='
+				break
+
+	
+	print 'Time for simulator execution: ', (etime-stime).total_seconds()
+
+
+connectip = '192.168.1.160'
+
+symclient = ''
+
+data = []
+
+sim_xhttpd = Simulator.Simulator('xhttpd')
+
+filelist = os.listdir('/home/spark/workspace/github_simulator/simulator_data/xhttpd/stosam')
+for filelist_each in filelist:
+	# time.sleep(2)
+	with open('/home/spark/workspace/github_simulator/simulator_data/xhttpd/stosam/'+'test000289.pc', 'r') as handle:
+		data = handle.read().split(', ')
+
+	if len(data) < 16:
+		continue
+
+	intlist=[int(i) for i in data]
+	chrlist=[chr(i) for i in intlist]
+	chrlist[-2] = '\n'
+	chrlist[-3] = '\n'
+	
+
+	print ''.join(chrlist)
+	symclient = ''.join(chrlist)
+
+	newpid = os.fork()
+
+	if newpid != 0:
+		child(sim_xhttpd, connectip, data)
+		break
+	else:
+		
+
+		clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		clientsocket.connect((connectip, 8082))
+
+		# newsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		# newsock.connect(('localhost', 10000))
+
+		stime = datetime.now()
+		clientsocket.sendall(symclient)
+		while 1:
+			a=clientsocket.recv(4096)
+			if a:
+				print a
+				# newsock.sendall(a)
+			else:
+				break
+		etime = datetime.now()
+		print 'Time for real system execution: ' + str((etime-stime).total_seconds())
+		# newsock.sendall('Time for real system execution: ' + str((etime-stime).total_seconds()))
+
+		# newsock.close()
+		clientsocket.close()
+		break

@@ -61,6 +61,14 @@ class Simulator:
 			self.search_tree = pickle.load(handle)
 			print 'Simulator __init__: search tree loaded.'
 
+		# caching simulate() into CPU code cache
+		with open(self.testpath + '/' + 'test000010.pc', 'r') as handle:
+			if self.signature == 'xhttpd':
+				self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
+			else:
+				self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+
+
 		# self.effects = dict()
 		# filelist = os.listdir(self.effcpath)
 		# for each in filelist:
@@ -72,12 +80,16 @@ class Simulator:
 
 	# find path to a concrete value and its effects
 	def simulate(self, value):
+		stime = datetime.now()
 		self.search_tree.tree_search(self.pyfunctions, value, self.var_name)
-		print self.search_tree.search_finalpath
-		try:
-			return [self.search_tree.search_finalpath[0], effects[self.search_tree.search_finalpath[0].split('.')[0]]]
-		except Exception, e:
-			return []
+		etime = datetime.now()
+		print 'search time: ', (etime - stime).total_seconds()
+		# print self.search_tree.search_finalpath
+		return self.search_tree.search_finalpath
+		# try:
+		# 	return [self.search_tree.search_finalpath[0], effects[self.search_tree.search_finalpath[0].split('.')[0]]]
+		# except Exception, e:
+		# 	return []
 		
 
 	# format test data
@@ -87,12 +99,15 @@ class Simulator:
 
 	# test on a single testfile in stosam dir. example: test000010.pc
 	def testdata_single(self, filename):
+		stime = datetime.now()
 		with open(self.testpath + '/' + filename, 'r') as handle:
 			if self.signature == 'xhttpd':
 				self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
 			else:
 				self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
-				print self.search_tree.search_finalpath
+		print self.search_tree.search_finalpath
+		etime = datetime.now()
+		print 'search time: ', (etime - stime).total_seconds()
 		try:
 			return [self.search_tree.search_finalpath[0], effects[self.search_tree.search_finalpath[0].split('.')[0]]]
 		except Exception, e:
@@ -106,16 +121,23 @@ class Simulator:
 		stime = datetime.now()
 		for each in testfilelist:
 			with open(self.testpath + '/' + each, 'r') as handle:
+				print 'testing on: ', each
+				sstime = datetime.now()
 				if self.signature == 'xhttpd':
 					self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
+					self.search_tree.dummy_function()
 				else:
 					self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+				eetime = datetime.now()
+				print (eetime - sstime).total_seconds()
 				print self.search_tree.search_finalpath
 		etime = datetime.now()
 
 		print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
 
 
-sim = Simulator('lzfx')
-# print sim.testdata_single('test000003.pc')
-sim.testdata_all()
+# sim = Simulator('xhttpd')
+# sim.simulate([[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [71, 69, 84, 32, 47, 97, 98, 99, 128, 197, 197, 197, 197, 197, 197, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+# sim.testdata_single('test000289.pc')
+# sim.testdata_all()
+

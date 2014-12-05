@@ -71,6 +71,13 @@ class STree:
 		else:
 			return False
 
+	# dummy function use to confirm code caching in CPU
+	def dummy_function(self):
+		a = 'string'
+		for i in xrange(10000):
+			a += 'string'
+			a = 'string'
+
 	def tree_search(self, predicates, value, var):
 		# print predicates[0:10]
 		self.searchcount = 0
