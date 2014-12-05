@@ -107,6 +107,8 @@ class Simulator:
 				self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
 		print self.search_tree.search_finalpath
 		etime = datetime.now()
+		print 'search count: ', self.search_tree.searchcount
+		print 'total count: ', self.search_tree.totalcount
 		print 'search time: ', (etime - stime).total_seconds()
 		try:
 			return [self.search_tree.search_finalpath[0], effects[self.search_tree.search_finalpath[0].split('.')[0]]]
@@ -118,6 +120,8 @@ class Simulator:
 		testfilelist = os.listdir(self.testpath)
 		if len(testfilelist) > 2000:
 			testfilelist = random.sample(list(testfilelist), 2000)
+		searchcount = 0
+		totalcount = 0
 		stime = datetime.now()
 		for each in testfilelist:
 			with open(self.testpath + '/' + each, 'r') as handle:
@@ -125,19 +129,22 @@ class Simulator:
 				sstime = datetime.now()
 				if self.signature == 'xhttpd':
 					self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
-					self.search_tree.dummy_function()
 				else:
 					self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
 				eetime = datetime.now()
-				print (eetime - sstime).total_seconds()
+				# print (eetime - sstime).total_seconds()
+				searchcount += self.search_tree.searchcount
+				totalcount += self.search_tree.totalcount
 				print self.search_tree.search_finalpath
 		etime = datetime.now()
 
 		print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
+		print 'avg search count: ', searchcount / len(testfilelist)
+		print 'avg total count: ', totalcount / len(testfilelist)
 
 
-# sim = Simulator('xhttpd')
+sim = Simulator('lzfx')
 # sim.simulate([[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [71, 69, 84, 32, 47, 97, 98, 99, 128, 197, 197, 197, 197, 197, 197, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-# sim.testdata_single('test000289.pc')
-# sim.testdata_all()
+# sim.testdata_single('test000232.pc')
+sim.testdata_all()
 

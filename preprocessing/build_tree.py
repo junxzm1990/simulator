@@ -23,7 +23,9 @@ class STree:
 		self.signature	= sig
 		self.search_finalpath = []
 		self.searchcount= 0
+		self.totalcount	= 0
 		self.pretable	= dict()
+		self.donesearch = False
 
 	def addnode(self, pre, fat):
 		self.node_index += 1
@@ -81,7 +83,9 @@ class STree:
 	def tree_search(self, predicates, value, var):
 		# print predicates[0:10]
 		self.searchcount = 0
+		self.totalcount = 0
 		self.search_finalpath = []
+		self.donesearch = False
 		self.pretable = dict()
 		self.rec_tree_search(predicates, value, var, self.root.fchild)
 
@@ -95,6 +99,7 @@ class STree:
 		while pointer is not None:
 			# print 'tested predicate: ', pointer.predicate
 			# print pointer.predicate[1]
+			self.totalcount += 1
 			temp = self.pretable.get(pointer.predicate)
 			if temp is not None:
 				results.append(temp)
@@ -103,20 +108,29 @@ class STree:
 				for ind, each in enumerate(var):
 					value_dict[each] = value[ind]
 				results.append(cvc_function_in_python.match_predicate(predicates[pointer.predicate][1], value_dict))
+
 				# results.append(self.translate_constr_testing(constr_testing(value, ('pad', predicates[pointer.predicate][1]), var)))
 				self.pretable[pointer.predicate] = results[-1]
 				self.searchcount += 1
-			pointer = pointer.sibling
-		# if results.count(True) != 1:
-		# 	print 'number of True error: ', results
-		
-		pointer = root
-		# print results
-		for res_each in results:
-			if res_each == True:
+			##############################################
+			if results[-1] == True:
 				if self.rec_tree_search(predicates, value, var, pointer.fchild) == False:
 					self.search_finalpath.extend(pointer.finalpath)
-			pointer = pointer.sibling
+					self.donesearch = True
+			if self.donesearch == True:
+				return True
+			else:
+				pointer = pointer.sibling
+			##############################################
+		# 	pointer = pointer.sibling
+		
+		# pointer = root
+		# for res_each in results:
+		# 	if res_each == True:
+		# 		if self.rec_tree_search(predicates, value, var, pointer.fchild) == False:
+		# 			self.search_finalpath.extend(pointer.finalpath)
+		# 	pointer = pointer.sibling
+		##############################################
 		return True
 
 
