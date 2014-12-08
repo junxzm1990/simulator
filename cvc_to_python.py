@@ -223,14 +223,24 @@ def p_expression_withassign(p):
         p[0] = 0
 
 
+mentiondict = dict()
+
 def p_expression_array(p):
     "expression : expression '[' expression ']'"
+    global mentiondict
+
     if p[1] in names:
         p[0]=names[p[1]][BitArray(p[3]).int]
         # print 'new variable: ', p[1]
     else:
         p[0]=p[1] + '[int2(' + p[3] +')]'
-        # print 'old variable: ', p[1], BitArray(p[3].replace('\'','')).int
+
+        # global cache
+        if mentiondict.get(p[1]) is None:
+            mentiondict[p[1]] = [BitArray(p[3].replace('\'','')).int]
+        else:
+            mentiondict[p[1]].append(BitArray(p[3].replace('\'','')).int)
+        print 'old variable: ', mentiondict
 #
 #    try:
 #        p[0] = names[p[1]][BitArray(p[3]).int]
@@ -468,22 +478,24 @@ def constr_testing(value, constr, var_name):
 
     return ([constr[0]], yacc.parse(constr[1]))
 
+# This dictionary is for building global cache table. We get the mentioned variables and indexes inside a predicate, and compare the value with what is inside the cache table, and see if it matches.
+
 def cvc_translate(test_str):
-	return yacc.parse(test_str)
+    return yacc.parse(test_str)
 
 
-cvc_translate('''
-    ASSERT( (LET let_k_0 == BVPLUS(32,
-0xFFFFFFD0,
-BVSX(SYMBOL_CLIENT_0x6ae64b0[0x00000004],32)
-)
-,
-let_k_1 == BVPLUS(32,
-0xFFFFFFD0,
-BVSX(SYMBOL_CLIENT_0x6ae64b0[0x00000005],32)
-)
+# cvc_translate('''
+#     ASSERT( (LET let_k_0 == BVPLUS(32,
+# 0xFFFFFFD0,
+# BVSX(SYMBOL_CLIENT_0x6ae64b0[0x00000004],32)
+# )
+# ,
+# let_k_1 == BVPLUS(32,
+# 0xFFFFFFD0,
+# BVSX(SYMBOL_CLIENT_0x6ae64b0[0x00000005],32)
+# )
 
-    ''')
+#     ''')
 
 # data = test.load_predicates('/home/spark/workspace/github_simulator/simulator_data/openaes/predicates')
 

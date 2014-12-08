@@ -13,15 +13,45 @@ def save_predicate(destination_file, predicates):
 	with open(destination_file, 'w') as handle:
 		pickle.dump(predicates, handle)	
 
+def save_mentiondict(destination_file, mentiondict):	
+	with open(destination_file, 'w') as handle:
+		pickle.dump(mentiondict, handle)	
+
 ###########
 def generate_python_predicate(sourcefile, destinationfile):
 	cvc_predicates=load_predicate(sourcefile)
 	pyfunctions = []
+	mentiondict = []
+
+	if sourcefile.find('xhttpd') > 0:
+		multiflag = True
+	else:
+		multiflag = False
+
 	for each in cvc_predicates:
+		cvc_to_python.mentiondict = dict()
 		pyfunctions.append((each[0], cvc_to_python.cvc_translate(each[1].replace('A-data', 'A_data'))))
+		if multiflag:
+			temp = [[], [], []]
+			temp[0] = cvc_to_python.mentiondict.get('SERSYMIP_0x2e8c640') if cvc_to_python.mentiondict.get('SERSYMIP_0x2e8c640') is not None else []
+			temp[1] = cvc_to_python.mentiondict.get('CONNECTIP_0x2ec4130')if cvc_to_python.mentiondict.get('CONNECTIP_0x2ec4130') is not None else []
+			if cvc_to_python.mentiondict.get('SymClient_0x2eaacd0') is not None:
+				temp[2] = cvc_to_python.mentiondict.get('SymClient_0x2eaacd0')
+			mentiondict.append((each[0], temp, dict()))
+		else:
+			mentiondict.append((each[0], cvc_to_python.mentiondict.values(), dict()))
+
+
+
 	# print pyfunctions
 	save_predicate(destinationfile, pyfunctions)
 
+	mentiondictfile = destinationfile.split('/')
+	mentiondictfile[-1] = 'mentiondict'
+	mentiondictfile = '/'.join(mentiondictfile)
+	print mentiondict
+
+	save_mentiondict(mentiondictfile, mentiondict)
 
 
 

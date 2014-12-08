@@ -19,6 +19,7 @@ class Simulator:
 			self.funcdata = '/home/spark/workspace/github_simulator/simulator_data/openaes/pyfunctions'
 			self.treedata = '/home/spark/workspace/github_simulator/simulator_data/openaes/search_tree'
 			self.testpath = '/home/spark/workspace/github_simulator/simulator_data/openaes/stosam'
+			self.mentdata = '/home/spark/workspace/github_simulator/simulator_data/openaes/mentiondict'
 			# self.effcpath = '/home/spark/workspace/github_simulator/simulator_data/openaes/cleaneffects'
 		elif signature == 'xhttpd':
 			self.var_name = ['SERSYMIP_0x2e8c640', 'CONNECTIP_0x2ec4130', 'SymClient_0x2eaacd0']
@@ -27,6 +28,7 @@ class Simulator:
 			self.treedata = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/search_tree'
 			self.testpath = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/stosam'
 			self.effcpath = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/cleaneffects'
+			self.mentdata = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/mentiondict'
 		elif signature == 'ghttpd':
 			self.var_name = ['SymClient_0x37fc490']
 			self.preddata = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/predicates'
@@ -34,6 +36,7 @@ class Simulator:
 			self.treedata = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/search_tree'
 			self.testpath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/stosam'
 			self.effcpath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/cleaneffects'
+			self.mentdata = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/mentiondict'
 		elif signature == 'wget':
 			self.var_name = ['SYMBOL_CLIENT_0x6ae64b0']
 			self.preddata = '/home/spark/workspace/github_simulator/simulator_data/wget/predicates'
@@ -41,6 +44,7 @@ class Simulator:
 			self.treedata = '/home/spark/workspace/github_simulator/simulator_data/wget/search_tree'
 			self.testpath = '/home/spark/workspace/github_simulator/simulator_data/wget/stosam'
 			self.effcpath = '/home/spark/workspace/github_simulator/simulator_data/wget/cleaneffects'
+			self.mentdata = '/home/spark/workspace/github_simulator/simulator_data/wget/mentiondict'
 		elif signature == 'lzfx':
 			self.var_name = ['A_data_0x4326cd0']
 			self.preddata = '/home/spark/workspace/github_simulator/simulator_data/lzfx/predicates'
@@ -48,11 +52,16 @@ class Simulator:
 			self.treedata = '/home/spark/workspace/github_simulator/simulator_data/lzfx/search_tree'
 			self.testpath = '/home/spark/workspace/github_simulator/simulator_data/lzfx/stosam'
 			self.effcpath = '/home/spark/workspace/github_simulator/simulator_data/lzfx/cleaneffects'
+			self.mentdata = '/home/spark/workspace/github_simulator/simulator_data/lzfx/mentiondict'
 		else:
 			print 'ERROR Simulator __init__: tree signature is wrong.'
 			exit(0)
 
 		# load configurations
+		with open(self.mentdata, 'r') as handle:
+			self.mentiondict = pickle.load(handle)
+			print 'Simulator __init__: mentioned dictionary loaded.'
+
 		with open(self.funcdata, 'r') as handle:
 			self.pyfunctions = pickle.load(handle)
 			print 'Simulator __init__: python functions loaded.'
@@ -64,9 +73,9 @@ class Simulator:
 		# caching simulate() into CPU code cache
 		with open(self.testpath + '/' + 'test000010.pc', 'r') as handle:
 			if self.signature == 'xhttpd':
-				self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
+				self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
 			else:
-				self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+				self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [self.format_test_data(handle)], self.var_name)
 
 
 		# self.effects = dict()
@@ -80,8 +89,9 @@ class Simulator:
 
 	# find path to a concrete value and its effects
 	def simulate(self, value):
+		print '*************************************'
 		stime = datetime.now()
-		self.search_tree.tree_search(self.pyfunctions, value, self.var_name)
+		self.search_tree.tree_search(self.mentiondict, self.pyfunctions, value, self.var_name)
 		etime = datetime.now()
 		print 'search time: ', (etime - stime).total_seconds()
 		# print self.search_tree.search_finalpath
@@ -102,13 +112,14 @@ class Simulator:
 		stime = datetime.now()
 		with open(self.testpath + '/' + filename, 'r') as handle:
 			if self.signature == 'xhttpd':
-				self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
+				self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
 			else:
-				self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+				self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [self.format_test_data(handle)], self.var_name)
 		print self.search_tree.search_finalpath
 		etime = datetime.now()
 		print 'search count: ', self.search_tree.searchcount
 		print 'total count: ', self.search_tree.totalcount
+		print 'global cache hit: ', self.search_tree.globalhit
 		print 'search time: ', (etime - stime).total_seconds()
 		try:
 			return [self.search_tree.search_finalpath[0], effects[self.search_tree.search_finalpath[0].split('.')[0]]]
@@ -122,29 +133,56 @@ class Simulator:
 			testfilelist = random.sample(list(testfilelist), 2000)
 		searchcount = 0
 		totalcount = 0
+		globalhit = 0
 		stime = datetime.now()
 		for each in testfilelist:
 			with open(self.testpath + '/' + each, 'r') as handle:
 				print 'testing on: ', each
 				sstime = datetime.now()
 				if self.signature == 'xhttpd':
-					self.search_tree.tree_search(self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
+					self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
 				else:
-					self.search_tree.tree_search(self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+					self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [self.format_test_data(handle)], self.var_name)
 				eetime = datetime.now()
-				# print (eetime - sstime).total_seconds()
 				searchcount += self.search_tree.searchcount
 				totalcount += self.search_tree.totalcount
+				globalhit += self.search_tree.globalhit
 				print self.search_tree.search_finalpath
 		etime = datetime.now()
 
 		print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
 		print 'avg search count: ', searchcount / len(testfilelist)
 		print 'avg total count: ', totalcount / len(testfilelist)
+		print 'avg global cache hit: ', globalhit / len(testfilelist)
+
+# second time
+		searchcount = 0
+		totalcount = 0
+		globalhit = 0
+		stime = datetime.now()
+		for each in testfilelist:
+			with open(self.testpath + '/' + each, 'r') as handle:
+				print 'testing on: ', each
+				sstime = datetime.now()
+				if self.signature == 'xhttpd':
+					self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
+				else:
+					self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+				eetime = datetime.now()
+				searchcount += self.search_tree.searchcount
+				totalcount += self.search_tree.totalcount
+				globalhit += self.search_tree.globalhit
+				print self.search_tree.search_finalpath
+		etime = datetime.now()
+
+		print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
+		print 'avg search count: ', searchcount / len(testfilelist)
+		print 'avg total count: ', totalcount / len(testfilelist)
+		print 'avg global cache hit: ', globalhit / len(testfilelist)
 
 
-sim = Simulator('lzfx')
+sim = Simulator('openaes')
 # sim.simulate([[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [71, 69, 84, 32, 47, 97, 98, 99, 128, 197, 197, 197, 197, 197, 197, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-# sim.testdata_single('test000232.pc')
+# sim.testdata_single('test001380.pc')
 sim.testdata_all()
 

@@ -24,6 +24,7 @@ class STree:
 		self.search_finalpath = []
 		self.searchcount= 0
 		self.totalcount	= 0
+		self.globalhit = 0
 		self.pretable	= dict()
 		self.donesearch = False
 
@@ -80,16 +81,17 @@ class STree:
 			a += 'string'
 			a = 'string'
 
-	def tree_search(self, predicates, value, var):
+	def tree_search(self, mentiondict, predicates, value, var):
 		# print predicates[0:10]
 		self.searchcount = 0
 		self.totalcount = 0
 		self.search_finalpath = []
+		self.globalhit = 0
 		self.donesearch = False
 		self.pretable = dict()
-		self.rec_tree_search(predicates, value, var, self.root.fchild)
+		self.rec_tree_search(mentiondict, predicates, value, var, self.root.fchild)
 
-	def rec_tree_search(self, predicates, value, var, root):
+	def rec_tree_search(self, mentiondict, predicates, value, var, root):
 		# print 'inside rec_tree_search'
 		# print 'root predicate: ', predicates[root.predicate]
 		results = []
@@ -104,17 +106,36 @@ class STree:
 			if temp is not None:
 				results.append(temp)
 			else:
-				value_dict = dict()
-				for ind, each in enumerate(var):
-					value_dict[each] = value[ind]
-				results.append(cvc_function_in_python.match_predicate(predicates[pointer.predicate][1], value_dict))
+				# compute hash value
+				hashvalue = 0
+				for i in xrange(len(mentiondict[pointer.predicate][1])):
+					for j in xrange(len(mentiondict[pointer.predicate][1][i])):
+						hashvalue = value[i][mentiondict[pointer.predicate][1][i][j]] + 0x9e3779b9 + (hashvalue << 6) + (hashvalue >> 2)
+				# print pointer.predicate
+				# print hashvalue
+				# print value[]
+				temp_hash = mentiondict[pointer.predicate][2].get(hashvalue)
+				if temp_hash is not None:
+					results.append(temp_hash)
+					# print mentiondict[pointer.predicate]
+					self.globalhit += 1
+				else:
+					value_dict = dict()
+					for ind, each in enumerate(var):
+						value_dict[each] = value[ind]
 
-				# results.append(self.translate_constr_testing(constr_testing(value, ('pad', predicates[pointer.predicate][1]), var)))
-				self.pretable[pointer.predicate] = results[-1]
-				self.searchcount += 1
+					results.append(cvc_function_in_python.match_predicate(predicates[pointer.predicate][1], value_dict))
+					self.pretable[pointer.predicate] = results[-1]
+					mentiondict[pointer.predicate][2][hashvalue] = results[-1]
+					# print results[-1]
+					# with open('moohaha', 'a') as handle:
+					# 	handle.write('mentiondict: %i, %i, %s\n' % (pointer.predicate, hashvalue, results[-1]))
+					self.searchcount += 1
+
 			##############################################
+			# Code for global caching
 			if results[-1] == True:
-				if self.rec_tree_search(predicates, value, var, pointer.fchild) == False:
+				if self.rec_tree_search(mentiondict, predicates, value, var, pointer.fchild) == False:
 					self.search_finalpath.extend(pointer.finalpath)
 					self.donesearch = True
 			if self.donesearch == True:
@@ -122,6 +143,7 @@ class STree:
 			else:
 				pointer = pointer.sibling
 			##############################################
+		# code for no global caching
 		# 	pointer = pointer.sibling
 		
 		# pointer = root
