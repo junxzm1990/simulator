@@ -25,6 +25,8 @@ class STree:
 		self.searchcount= 0
 		self.totalcount	= 0
 		self.globalhit = 0
+		self.localhit = 0
+		# local cache table
 		self.pretable	= dict()
 		self.donesearch = False
 
@@ -81,79 +83,81 @@ class STree:
 			a += 'string'
 			a = 'string'
 
+	
 	def tree_search(self, mentiondict, predicates, value, var):
-		# print predicates[0:10]
+		# initialize static variables for each tree search
 		self.searchcount = 0
 		self.totalcount = 0
-		self.search_finalpath = []
 		self.globalhit = 0
-		self.donesearch = False
+		self.localhit = 0
+		self.search_finalpath = []
 		self.pretable = dict()
-		self.rec_tree_search(mentiondict, predicates, value, var, self.root.fchild)
 
-	def rec_tree_search(self, mentiondict, predicates, value, var, root):
-		# print 'inside rec_tree_search'
-		# print 'root predicate: ', predicates[root.predicate]
-		results = []
-		pointer = root
-		if pointer is None:
-			return False
-		while pointer is not None:
-			# print 'tested predicate: ', pointer.predicate
-			# print pointer.predicate[1]
+		result = None
+		pointer = self.root.fchild
+		# stack used to protect the search progress
+		stack = []
+
+		while True:
+
+			# get the match result of a predicate
+
+			# traverse through a tree node
 			self.totalcount += 1
-			temp = self.pretable.get(pointer.predicate)
-			if temp is not None:
-				results.append(temp)
+			# check local cache table first. pretable: {predicate_index: result}
+			localcache = self.pretable.get(pointer.predicate)
+
+			# hit local cache
+			if localcache is not None:
+				result = localcache
+				# count of local hit increase
+				self.localhit += 1
+			# does not hit local cache
 			else:
-				# compute hash value
+				# check global cache table. mentiondict: [(predicate_index, [[], [], []], {hashvalue: result})]
 				hashvalue = 0
 				for i in xrange(len(mentiondict[pointer.predicate][1])):
 					for j in xrange(len(mentiondict[pointer.predicate][1][i])):
+						# print i, j
+						# print mentiondict[pointer.predicate][1][i][j]
 						hashvalue = value[i][mentiondict[pointer.predicate][1][i][j]] + 0x9e3779b9 + (hashvalue << 6) + (hashvalue >> 2)
-				# print pointer.predicate
-				# print hashvalue
-				# print value[]
-				temp_hash = mentiondict[pointer.predicate][2].get(hashvalue)
-				if temp_hash is not None:
-					results.append(temp_hash)
-					# print mentiondict[pointer.predicate]
+				globalcache = mentiondict[pointer.predicate][2].get(hashvalue)
+
+				# hit global cache
+				if globalcache is not None:
+					result = globalcache
+					# count of global hit increase
 					self.globalhit += 1
+				# does not hit global cache
 				else:
 					value_dict = dict()
-					for ind, each in enumerate(var):
-						value_dict[each] = value[ind]
+					for index, each in enumerate(var):
+						value_dict[each] = value[index]
 
-					results.append(cvc_function_in_python.match_predicate(predicates[pointer.predicate][1], value_dict))
-					self.pretable[pointer.predicate] = results[-1]
-					mentiondict[pointer.predicate][2][hashvalue] = results[-1]
-					# print results[-1]
-					# with open('moohaha', 'a') as handle:
-					# 	handle.write('mentiondict: %i, %i, %s\n' % (pointer.predicate, hashvalue, results[-1]))
+					# do a predicate match attempt
+					result = cvc_function_in_python.match_predicate(predicates[pointer.predicate][1], value_dict)
+					# count of predicate match attempt increase
 					self.searchcount += 1
+					# add new item into local cache table and global cache table
+					self.pretable[pointer.predicate] = result
+					mentiondict[pointer.predicate][2][hashvalue] = result
 
-			##############################################
-			# Code for global caching
-			if results[-1] == True:
-				if self.rec_tree_search(mentiondict, predicates, value, var, pointer.fchild) == False:
+
+			# traverse through the search tree
+			if result == True:
+				stack.append(pointer)
+				# found a path
+				if pointer.fchild is None:
 					self.search_finalpath.extend(pointer.finalpath)
-					self.donesearch = True
-			if self.donesearch == True:
-				return True
+					return
+				pointer = pointer.fchild
 			else:
+				while pointer.sibling is None:
+					try:
+						pointer = stack.pop()
+					except:
+						return
 				pointer = pointer.sibling
-			##############################################
-		# code for no global caching
-		# 	pointer = pointer.sibling
-		
-		# pointer = root
-		# for res_each in results:
-		# 	if res_each == True:
-		# 		if self.rec_tree_search(predicates, value, var, pointer.fchild) == False:
-		# 			self.search_finalpath.extend(pointer.finalpath)
-		# 	pointer = pointer.sibling
-		##############################################
-		return True
 
 
 	def build_tree(self, paths):

@@ -1,4 +1,5 @@
 import test
+import re
 from bitstring import BitArray
 import logging
 logging.basicConfig(
@@ -236,10 +237,21 @@ def p_expression_array(p):
         p[0]=p[1] + '[int2(' + p[3] +')]'
 
         # global cache
+        # print p[3]
         if mentiondict.get(p[1]) is None:
-            mentiondict[p[1]] = [BitArray(p[3].replace('\'','')).int]
-        else:
-            mentiondict[p[1]].append(BitArray(p[3].replace('\'','')).int)
+            mentiondict[p[1]] = []
+        
+        try:
+            temp = BitArray(p[3].replace('\'','')).int
+            mentiondict[p[1]].append(temp)
+        except:
+            matcher = re.compile('A_data_0x4326cd0\[int2\([^\)]*\)')
+            matchlist = matcher.findall(p[3])
+            templist = [each.split('\'')[1] for each in matchlist]
+            for each in templist:
+                temp = BitArray(each.replace('\'','')).int
+                if temp not in mentiondict[p[1]]:
+                    mentiondict[p[1]].append(temp)
         print 'old variable: ', mentiondict
 #
 #    try:
