@@ -136,6 +136,7 @@ class STree:
 
 					# do a predicate match attempt
 					result = cvc_function_in_python.match_predicate(predicates[pointer.predicate][1], value_dict)
+					# print 'match result', pointer.predicate, predicates[pointer.predicate], result
 					# count of predicate match attempt increase
 					self.searchcount += 1
 					# add new item into local cache table and global cache table
