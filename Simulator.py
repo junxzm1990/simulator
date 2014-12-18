@@ -86,6 +86,14 @@ class Simulator:
 		# print 'Simulator __init__: effects loaded.'
 
 
+	def __del__(self):
+		# write back global cache table
+		import cPickle as pickle
+
+		with open(self.mentdata, 'w') as handle:
+			pickle.dump(self.mentiondict, handle)
+		print 'Simulator __del__: mentioned dictionary wrote back.'
+
 
 	# find path to a concrete value and its effects
 	def simulate(self, value):
@@ -139,7 +147,7 @@ class Simulator:
 		stime = datetime.now()
 		for each in testfilelist:
 			with open(self.testpath + '/' + each, 'r') as handle:
-				print 'testing on: ', each
+				# print 'testing on: ', each
 				sstime = datetime.now()
 				if self.signature == 'xhttpd':
 					self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
@@ -150,7 +158,7 @@ class Simulator:
 				totalcount += self.search_tree.totalcount
 				globalhit += self.search_tree.globalhit
 				localhit += self.search_tree.localhit
-				print self.search_tree.search_finalpath
+				# print self.search_tree.search_finalpath
 		etime = datetime.now()
 
 		print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
@@ -160,36 +168,36 @@ class Simulator:
 		print 'avg local cache hit: ', localhit / len(testfilelist)
 
 # second time
-		# searchcount = 0
-		# totalcount = 0
-		# globalhit = 0
-		# localhit = 0
-		# stime = datetime.now()
-		# for each in testfilelist:
-		# 	with open(self.testpath + '/' + each, 'r') as handle:
-		# 		print 'testing on: ', each
-		# 		sstime = datetime.now()
-		# 		if self.signature == 'xhttpd':
-		# 			self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
-		# 		else:
-		# 			self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [self.format_test_data(handle)], self.var_name)
-		# 		eetime = datetime.now()
-		# 		searchcount += self.search_tree.searchcount
-		# 		totalcount += self.search_tree.totalcount
-		# 		globalhit += self.search_tree.globalhit
-		# 		localhit += self.search_tree.localhit
-		# 		print self.search_tree.search_finalpath
-		# etime = datetime.now()
+		searchcount = 0
+		totalcount = 0
+		globalhit = 0
+		localhit = 0
+		stime = datetime.now()
+		for each in testfilelist:
+			with open(self.testpath + '/' + each, 'r') as handle:
+				# print 'testing on: ', each
+				sstime = datetime.now()
+				if self.signature == 'xhttpd':
+					self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
+				else:
+					self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+				eetime = datetime.now()
+				searchcount += self.search_tree.searchcount
+				totalcount += self.search_tree.totalcount
+				globalhit += self.search_tree.globalhit
+				localhit += self.search_tree.localhit
+				# print self.search_tree.search_finalpath
+		etime = datetime.now()
 
-		# print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
-		# print 'avg search count: ', searchcount / len(testfilelist)
-		# print 'avg total count: ', totalcount / len(testfilelist)
-		# print 'avg global cache hit: ', globalhit / len(testfilelist)
-		# print 'avg local cache hit: ', localhit / len(testfilelist)
+		print 'avg search time: ', (etime - stime).total_seconds() / len(testfilelist)
+		print 'avg search count: ', searchcount / len(testfilelist)
+		print 'avg total count: ', totalcount / len(testfilelist)
+		print 'avg global cache hit: ', globalhit / len(testfilelist)
+		print 'avg local cache hit: ', localhit / len(testfilelist)
 
 
-sim = Simulator('openaes')
+sim = Simulator('xhttpd')
 # sim.simulate([[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [71, 69, 84, 32, 47, 97, 98, 99, 128, 197, 197, 197, 197, 197, 197, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-# sim.testdata_single('test000159.pc')
-sim.testdata_all()
+sim.testdata_single('test096941.pc')
+# sim.testdata_all()
 

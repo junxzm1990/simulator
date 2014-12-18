@@ -64,12 +64,12 @@ def child(connectip, data):
 				print 'file to be deleted: ', symclient.split(':) ')[1]
 				print '============================='
 				break
-
+ 
 
 
 
 print 'in demo_delete_socket_client'
-connectip = '192.168.1.160'
+connectip = '192.168.1.161'
 
 sim_xhttpd = Simulator.Simulator('xhttpd')
 
