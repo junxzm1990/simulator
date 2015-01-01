@@ -115,6 +115,7 @@ def send_request(ser_name, connectip, port, symclient):
 		else:
 			break
 	etime = datetime.now()
+	print 'Time for real execution: ', (etime-stime).total_seconds()
 	# newsock.sendall('Time for real system execution: ' + str((etime-stime).total_seconds()))
 	clientsocket.close()
 	# newsock.close()

@@ -1,5 +1,4 @@
 import cPickle as pickle
-from cvc_parsing import constr_testing
 from bitstring import BitArray
 import sys
 sys.path.append('/home/spark/workspace/github_simulator')
@@ -69,12 +68,6 @@ class STree:
 		while pointer is not None:
 			self.rec_dump_tree(pointer.fchild, layer+1)
 			pointer = pointer.sibling
-
-	def translate_constr_testing(self, result):
-		if BitArray(result[1]).int == 1:
-			return True
-		else:
-			return False
 
 	# dummy function use to confirm code caching in CPU
 	def dummy_function(self):
@@ -210,7 +203,7 @@ class STree:
 if __name__ == '__main__':
 
 # =============================================================
-	settings = 'lzfx'
+	settings = 'xhttpd'
 
 	if settings == 'openaes':
 		treesign = 'openaes_tree_1'
