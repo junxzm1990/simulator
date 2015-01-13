@@ -219,7 +219,6 @@ public:
 			bool result;
 
 			// do a predicate match attempt
-			cout << pointer->predicate << endl;
 			result = predicate_func[pointer->predicate]();
 			search_match_count ++;
 
@@ -423,12 +422,12 @@ int main()
 
 	struct timeval stime, etime;
 
-	gettimeofday(&stime, NULL);
-	sim.testdata_single("test000001.pc");
-	gettimeofday(&etime, NULL);
-	cout << (etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000 << endl;
+	// gettimeofday(&stime, NULL);
+	// sim.testdata_single("test000001.pc");
+	// gettimeofday(&etime, NULL);
+	// cout << (etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000 << endl;
 
-	// sim.testdata_all();
+	sim.testdata_all();
 
 	return 0;
 }

@@ -1,9 +1,9 @@
 #include "c_functions/c_primitives.h"
 #include "c_functions/global.h"
 
-char* CONNECTIP_0x2ec4130[VALUE_LENGTH];
-char* SERSYMIP_0x2e8c640[VALUE_LENGTH];
-char* SymClient_0x2eaacd0[VALUE_LENGTH];
+char (*CONNECTIP_0x2ec4130)[VALUE_LENGTH];
+char (*SERSYMIP_0x2e8c640)[VALUE_LENGTH];
+char (*SymClient_0x2eaacd0)[VALUE_LENGTH];
 
 bool xhttpd_pre_0()
 {

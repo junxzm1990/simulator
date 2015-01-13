@@ -5,7 +5,6 @@ using namespace std;
 
 unsigned int int2(const char* str)
 {	
-	cout << "inside int2" << endl;
 	if(!str)
 	{
 		cout << "int2: Empty string.\n";

@@ -1,7 +1,7 @@
 #include "c_functions/c_primitives.h"
 #include "c_functions/global.h"
 
-char* A_data_0x2fb50b0[VALUE_LENGTH];
+char (*A_data_0x2fb50b0)[VALUE_LENGTH];
 
 bool openaes_pre_0()
 {
