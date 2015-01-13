@@ -1,6 +1,10 @@
 #include "c_functions/global.h"
 using namespace std;
 
+// a stupid design
+char def_connectip[32][VALUE_LENGTH];
+char def_sersymip[32][VALUE_LENGTH];
+
 class TNode
 {
 public:
@@ -168,8 +172,6 @@ public:
 
 	void tree_search(char val[][VALUE_LENGTH])
 	{
-		// int def_connectip[] = {192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		// int def_sersymip[] = {192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		if (signature == "openaes")
 		{
 			extern char (*A_data_0x2fb50b0)[VALUE_LENGTH];
@@ -180,8 +182,8 @@ public:
 			extern char (*CONNECTIP_0x2ec4130)[VALUE_LENGTH];
 			extern char (*SERSYMIP_0x2e8c640)[VALUE_LENGTH];
 			extern char (*SymClient_0x2eaacd0)[VALUE_LENGTH];
-			// CONNECTIP_0x2ec4130 = def_connectip;
-			// SERSYMIP_0x2e8c640 = def_sersymip;
+			CONNECTIP_0x2ec4130 = def_connectip;
+			SERSYMIP_0x2e8c640 = def_sersymip;
 			SymClient_0x2eaacd0 = val;
 		}
 		else if (signature == "ghttpd")
@@ -257,12 +259,11 @@ class Simulator {
 	STree* search_tree;
 
 	string testdatapath;
-
-
 public:
 	Simulator(string program)
 	{
 		signature = program;
+
 
 		if (signature == "openaes")
 		{
@@ -275,6 +276,19 @@ public:
 			mentdatafile = "/home/spark/workspace/github_simulator/simulator_data/xhttpd/mentiondict";
 			treedatafile = "/home/spark/workspace/github_simulator/simulator_data/xhttpd/c_search_tree";
 			testdatapath = "/home/spark/workspace/github_simulator/simulator_data/xhttpd/stosam/";
+			strcpy(def_connectip[0], "0b11000000");
+			strcpy(def_sersymip[0], "0b11000000");
+			strcpy(def_connectip[1], "0b10101000");
+			strcpy(def_sersymip[1], "0b10101000");
+			strcpy(def_connectip[2], "0b00000001");
+			strcpy(def_sersymip[2], "0b00000001");
+			strcpy(def_connectip[3], "0b11110100");
+			strcpy(def_sersymip[3], "0b11110100");
+			for (int i = 4; i <32; i ++)
+			{
+				strcpy(def_connectip[i], "0b00000000");
+				strcpy(def_sersymip[i], "0b00000000");
+			}
 		}
 		else if (signature == "ghttpd")
 		{
@@ -322,8 +336,8 @@ public:
 	{
 		ifstream datafile((testdatapath + filename).c_str());
 		string tempdata;
-		int data[3*MAX_VALUE_LENGTH];
-		char str_data[3*MAX_VALUE_LENGTH][VALUE_LENGTH];
+		int data[MAX_VALUE_LENGTH];
+		char str_data[MAX_VALUE_LENGTH][VALUE_LENGTH];
 
 		int i = 0;
 		if (datafile.is_open())
@@ -418,12 +432,12 @@ public:
 // test
 int main()
 {
-	Simulator sim = Simulator("ghttpd");
+	Simulator sim = Simulator("xhttpd");
 
 	struct timeval stime, etime;
 
 	// gettimeofday(&stime, NULL);
-	// sim.testdata_single("test000001.pc");
+	// sim.testdata_single("test000011.pc");
 	// gettimeofday(&etime, NULL);
 	// cout << (etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000 << endl;
 
