@@ -1,7 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include <global.h>
+#include "c_functions/global.h"
 using namespace std;
 
 class TNode
@@ -142,12 +139,12 @@ public:
 			rec_tree_dump(pointer->fchild, layer+1);
 			pointer = pointer->sibling;
 		}
-	}
+	};
 
 	void tree_building(ifstream& handle)
 	{
 		rec_tree_building(handle, root);
-	}
+	};
 
 	void rec_tree_building(ifstream& handle, TNode* rt)
 	{
@@ -167,28 +164,28 @@ public:
 			rec_tree_building(handle, rt);
 			return;
 		}
-	}
+	};
 
-	void tree_search(int* val)
+	void tree_search(char val[][VALUE_LENGTH])
 	{
-		int connectip[] = {192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		int sersymip[] = {192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		// int def_connectip[] = {192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		// int def_sersymip[] = {192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		if (signature == "openaes")
 		{
 
 		}
 		else if (signature == "xhttpd")
 		{
-			extern int* CONNECTIP_0x2ec4130;
-			extern int* SERSYMIP_0x2e8c640;
-			extern int* SymClient_0x2eaacd0;
-			CONNECTIP_0x2ec4130 = connectip;
-			SERSYMIP_0x2e8c640 = sersymip;
+			extern char (*CONNECTIP_0x2ec4130)[VALUE_LENGTH];
+			extern char (*SERSYMIP_0x2e8c640)[VALUE_LENGTH];
+			extern char (*SymClient_0x2eaacd0)[VALUE_LENGTH];
+			// CONNECTIP_0x2ec4130 = def_connectip;
+			// SERSYMIP_0x2e8c640 = def_sersymip;
 			SymClient_0x2eaacd0 = val;
 		}
 		else if (signature == "ghttpd")
 		{
-			extern int* SymClient_0x37fc490;
+			extern char (*SymClient_0x37fc490)[VALUE_LENGTH];
 			SymClient_0x37fc490 = val;
 		}
 		else if (signature == "wget")
@@ -204,7 +201,51 @@ public:
 			cout << "ERROR: STree::tree_search: Wrong program signature.\n";
 			exit(0);
 		}
-	}
+
+		// tree traverse
+		search_match_count	= 0;
+		search_total_count	= 0;
+		search_global_hit	= 0;
+		search_local_hit	= 0;
+		search_finalpath	= "";
+
+		TNode* pointer = root->fchild;
+
+		while (true)
+		{
+			search_total_count ++;
+
+			bool result;
+
+			// do a predicate match attempt
+			result = predicate_func[pointer->predicate]();
+			search_match_count ++;
+
+			if (result == true)
+			{
+				if (pointer->fchild == NULL)
+				{
+					search_finalpath = pointer->finalpath;
+					return;
+				}
+				else
+				{
+					pointer = pointer->fchild;
+				}
+			}
+			else
+			{
+				while (pointer->sibling == NULL)
+				{
+					if (pointer != root)
+						pointer = pointer->father;
+					else
+						return;
+				}
+				pointer = pointer->sibling;
+			}
+		}
+	};
 };
 
 class Simulator {
@@ -259,23 +300,33 @@ public:
 		}
 
 		search_tree = new STree(signature, treedatafile);
-	}
+	};
 
 	// int *value: points to a one-dimentional array that hold all input value
-	string simulate(int *value)
-	{
+	// string simulate(int *value)
+	// {
 		
-	}
+	// };
+
+	void inttobinary(int* data, char str_data[][VALUE_LENGTH], int count)
+	{
+		for (int i = 0; i < count; i ++)
+		{
+			bitset<8> bits(data[i]);
+			strcpy(str_data[i], ("0b" + bits.to_string()).c_str());
+		}
+	};
 
 	void testdata_single(string filename)
 	{
 		ifstream datafile((testdatapath + filename).c_str());
 		string tempdata;
-		int data[MAX_VALUE_LENGTH];
+		int data[3*MAX_VALUE_LENGTH];
+		char str_data[3*MAX_VALUE_LENGTH][VALUE_LENGTH];
 
+		int i = 0;
 		if (datafile.is_open())
 		{
-			int i = 0;
 			while (datafile.good())
 			{
 				getline(datafile, tempdata, ',');
@@ -288,8 +339,11 @@ public:
 			cout << "ERROR: Simulator:testdata_single: Error opening file.\n";
 		}
 
-		search_tree->tree_search(data);
-	}
+		inttobinary(data, str_data, i);
+
+		search_tree->tree_search(str_data);
+		cout << search_tree->search_finalpath << endl;
+	};
 };
 
 
@@ -297,8 +351,13 @@ public:
 // test
 int main()
 {
-	Simulator sim = Simulator("xhttpd");
-	sim.testdata_single("test000100.pc");
+	Simulator sim = Simulator("ghttpd");
+
+	struct timeval stime, etime;
+	gettimeofday(&stime, NULL);
+	sim.testdata_single("test001300.pc");
+	gettimeofday(&etime, NULL);
+	cout << (etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000 << endl;
 
 	return 0;
 }

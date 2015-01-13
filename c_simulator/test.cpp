@@ -1,9 +1,13 @@
-#include <bitset>
+#include <cstring>
 #include <iostream>
 using namespace std;
 
 int main()
 {
-	bitset<8> x(24);
-	cout << "0b" + x.to_string() << endl;
+	string a = "string";
+	char b[2];
+	char c[] = "xxxxx";
+	strcpy(b, a.c_str());
+	cout << b << endl;
+	cout << c << endl;
 }
