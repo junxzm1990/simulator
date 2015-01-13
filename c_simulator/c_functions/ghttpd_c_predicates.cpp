@@ -1,7 +1,7 @@
 #include "c_functions/c_primitives.h"
 #include "c_functions/global.h"
 
-char (*SymClient_0x37fc490)[VALUE_LENGTH];
+char* SymClient_0x37fc490[VALUE_LENGTH];
 
 bool ghttpd_pre_0()
 {

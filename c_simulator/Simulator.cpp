@@ -58,7 +58,7 @@ public:
 		// initialize function pointers
 		if (signature == "openaes")
 		{
-			// openaes_funcptr(predicate_func);
+			openaes_funcptr(predicate_func);
 		}
 		else if (signature == "xhttpd")
 		{
@@ -172,7 +172,8 @@ public:
 		// int def_sersymip[] = {192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		if (signature == "openaes")
 		{
-
+			extern char (*A_data_0x2fb50b0)[VALUE_LENGTH];
+			A_data_0x2fb50b0 = val;
 		}
 		else if (signature == "xhttpd")
 		{
@@ -218,6 +219,7 @@ public:
 			bool result;
 
 			// do a predicate match attempt
+			cout << pointer->predicate << endl;
 			result = predicate_func[pointer->predicate]();
 			search_match_count ++;
 
@@ -344,6 +346,72 @@ public:
 		search_tree->tree_search(str_data);
 		cout << search_tree->search_finalpath << endl;
 	};
+
+	void getdir(string dir, vector<string> &files)
+	{
+		DIR *dp;
+		struct dirent *dirp;
+		if ((dp = opendir(dir.c_str())) == NULL)
+		{
+			cout << "Simulator::getdir: Error opening diretory." << endl;
+			exit(0);
+		}
+		else
+		{
+			while((dirp = readdir(dp)) != NULL)
+			{
+				files.push_back(string(dirp->d_name));
+			}
+			closedir(dp);
+		}
+	}
+
+	void testdata_all()
+	{
+		struct timeval stime, etime;
+
+		vector<string> files = vector<string>();
+
+		getdir(testdatapath, files);
+
+		int i = 0;
+		long total_count = 0;
+		gettimeofday(&stime, NULL);
+		for (i = 0; i < files.size(); i++)
+		{
+			if (i == 3000)
+				break;
+			ifstream datafile((testdatapath + files[i]).c_str());
+			string tempdata;
+			int data[3*MAX_VALUE_LENGTH];
+			char str_data[3*MAX_VALUE_LENGTH][VALUE_LENGTH];
+
+			int j = 0;
+			if (datafile.is_open())
+			{
+				while (datafile.good())
+				{
+					getline(datafile, tempdata, ',');
+					data[j++] = atoi(tempdata.c_str());
+				}
+				datafile.close();
+			}
+			else
+			{
+				cout << "ERROR: Simulator:testdata_all: Error opening file.\n";
+			}
+
+			inttobinary(data, str_data, j);
+
+			// cout << files[i] << endl;
+			search_tree->tree_search(str_data);
+			total_count += search_tree->search_total_count;
+			// cout << search_tree->search_finalpath << endl;
+		}
+		gettimeofday(&etime, NULL);
+		cout << "avg search count: " << total_count / i << endl;
+		cout << "avg search time: " << ((etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000) / i << endl;
+	}
 };
 
 
@@ -354,10 +422,13 @@ int main()
 	Simulator sim = Simulator("ghttpd");
 
 	struct timeval stime, etime;
+
 	gettimeofday(&stime, NULL);
-	sim.testdata_single("test001300.pc");
+	sim.testdata_single("test000001.pc");
 	gettimeofday(&etime, NULL);
 	cout << (etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000 << endl;
+
+	// sim.testdata_all();
 
 	return 0;
 }

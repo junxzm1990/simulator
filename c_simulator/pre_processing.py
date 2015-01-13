@@ -16,10 +16,16 @@ def serialize_node(node, handle):
 	handle.write("%d\n" % node.predicate)
 	handle.write("%s\n" % ' '.join(node.finalpath))
 
+openaes_treepath = '/home/spark/workspace/github_simulator/simulator_data/openaes/search_tree'
 xhttpd_treepath = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/search_tree'
 ghttpd_treepath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/search_tree'
+openaes_c_treepath = '/home/spark/workspace/github_simulator/simulator_data/openaes/c_search_tree'
 xhttpd_c_treepath = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/c_search_tree'
 ghttpd_c_treepath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/c_search_tree'
+
+
+with open(openaes_treepath, 'r') as handle:
+	openaes_search_tree = pickle.load(handle)
 
 with open(xhttpd_treepath, 'r') as handle:
 	xhttpd_search_tree = pickle.load(handle)
@@ -27,12 +33,16 @@ with open(xhttpd_treepath, 'r') as handle:
 with open(ghttpd_treepath, 'r') as handle:
 	ghttpd_search_tree = pickle.load(handle)
 
+openaes_handle = open(openaes_c_treepath, 'a')
 xhttpd_handle = open(xhttpd_c_treepath, 'a')
 ghttpd_handle = open(ghttpd_c_treepath, 'a')
 
 
+serialize(openaes_search_tree.root.fchild, openaes_handle)
 serialize(xhttpd_search_tree.root.fchild, xhttpd_handle)
 serialize(ghttpd_search_tree.root.fchild, ghttpd_handle)
 
+
+openaes_handle.close()
 xhttpd_handle.close()
 ghttpd_handle.close()

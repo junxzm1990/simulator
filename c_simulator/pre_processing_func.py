@@ -27,10 +27,16 @@ def func_generate(program, pyfunc, handle):
 	handle.write('}\n\n')
 
 
+openaes_funcpath = '/home/spark/workspace/github_simulator/simulator_data/openaes/pyfunctions'
 xhttpd_funcpath = '/home/spark/workspace/github_simulator/simulator_data/xhttpd/pyfunctions'
 ghttpd_funcpath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/pyfunctions'
+openaes_c_funcpath = '/home/spark/workspace/github_simulator/c_simulator/c_functions/openaes_c_predicates.cpp'
 xhttpd_c_funcpath = '/home/spark/workspace/github_simulator/c_simulator/c_functions/xhttpd_c_predicates.cpp'
 ghttpd_c_funcpath = '/home/spark/workspace/github_simulator/c_simulator/c_functions/ghttpd_c_predicates.cpp'
+
+
+with open(openaes_funcpath, 'r') as handle:
+	openaes_pyfunctions = pickle.load(handle)
 
 with open(xhttpd_funcpath, 'r') as handle:
 	xhttpd_pyfunctions = pickle.load(handle)
@@ -38,8 +44,10 @@ with open(xhttpd_funcpath, 'r') as handle:
 with open(ghttpd_funcpath, 'r') as handle:
 	ghttpd_pyfunctions = pickle.load(handle)
 
+openaes_handle = open(openaes_c_funcpath, 'a')
 xhttpd_handle = open(xhttpd_c_funcpath, 'a')
 ghttpd_handle = open(ghttpd_c_funcpath, 'a')
 
+func_generate('openaes', openaes_pyfunctions, openaes_handle)
 func_generate('xhttpd', xhttpd_pyfunctions, xhttpd_handle)
 func_generate('ghttpd', ghttpd_pyfunctions, ghttpd_handle)
