@@ -177,6 +177,9 @@ void STree::tree_search(char val[][VALUE_LENGTH])
 		exit(0);
 	}
 
+	// local caching table
+	short localcachingtale[MAX_PREDICATE_NUMBER] = {0}; // initialize all into 0
+
 	// tree traverse
 	search_match_count	= 0;
 	search_total_count	= 0;
@@ -192,9 +195,18 @@ void STree::tree_search(char val[][VALUE_LENGTH])
 
 		bool result;
 
-		// do a predicate match attempt
-		result = predicate_func[pointer->predicate]();
-		search_match_count ++;
+		do a predicate match attempt
+		if (localcachingtale[pointer->predicate] != 0)
+		{
+			result = (localcachingtale[pointer->predicate] > 0)? true : false;
+			search_local_hit ++;
+		}
+		else
+		{
+			result = predicate_func[pointer->predicate]();
+			search_match_count ++;
+			localcachingtale[pointer->predicate] = result? 1 : -1;
+		}
 
 		if (result == true)
 		{
@@ -283,7 +295,6 @@ Simulator::Simulator(string program)
 	search_tree = new STree(signature, treedatafile);
 };
 
-
 string Simulator::simulate(char allval[][VALUE_LENGTH])
 {
 	if (signature == "xhttpd")
@@ -346,6 +357,9 @@ void Simulator::getdir(string dir, vector<string> &files)
 	{
 		while((dirp = readdir(dp)) != NULL)
 		{
+			if ((!string(dirp->d_name).compare(".")) || (!string(dirp->d_name).compare("..")))
+				continue;
+			// cout << dirp->d_name << endl;
 			files.push_back(string(dirp->d_name));
 		}
 		closedir(dp);
@@ -362,6 +376,7 @@ void Simulator::testdata_all()
 
 	int i = 0;
 	long total_count = 0;
+	long match_count = 0;
 	gettimeofday(&stime, NULL);
 	for (i = 0; i < files.size(); i++)
 	{
@@ -369,8 +384,8 @@ void Simulator::testdata_all()
 			break;
 		ifstream datafile((testdatapath + files[i]).c_str());
 		string tempdata;
-		int data[3*MAX_VALUE_LENGTH];
-		char str_data[3*MAX_VALUE_LENGTH][VALUE_LENGTH];
+		int data[MAX_VALUE_LENGTH];
+		char str_data[MAX_VALUE_LENGTH][VALUE_LENGTH];
 
 		int j = 0;
 		if (datafile.is_open())
@@ -391,11 +406,13 @@ void Simulator::testdata_all()
 
 		// cout << files[i] << endl;
 		search_tree->tree_search(str_data);
-		total_count += search_tree->search_total_count;
 		// cout << search_tree->search_finalpath << endl;
+		total_count += search_tree->search_total_count;
+		match_count += search_tree->search_match_count;
 	}
 	gettimeofday(&etime, NULL);
-	cout << "avg search count: " << total_count / i << endl;
+	cout << "avg search total count: " << total_count / i << endl;
+	cout << "avg search match count: " << match_count / i << endl;
 	cout << "avg search time: " << ((etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000) / i << endl;
 };
 
