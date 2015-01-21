@@ -28,8 +28,11 @@ def generate_python_predicate(sourcefile, destinationfile):
 	else:
 		multiflag = False
 
-	for each in cvc_predicates:
+	for index, each in enumerate(cvc_predicates):
 		cvc_to_python.mentiondict = dict()
+		print '---------------- ', index , '---------------- '
+		print each
+		print '-------------------------------- '
 		pyfunctions.append((each[0], cvc_to_python.cvc_translate(each[1].replace('A-data', 'A_data'))))
 		if multiflag:
 			temp = [[], [], []]
@@ -49,7 +52,7 @@ def generate_python_predicate(sourcefile, destinationfile):
 	mentiondictfile = destinationfile.split('/')
 	mentiondictfile[-1] = 'mentiondict'
 	mentiondictfile = '/'.join(mentiondictfile)
-	print mentiondict
+	# print mentiondict
 
 	save_mentiondict(mentiondictfile, mentiondict)
 
@@ -57,42 +60,46 @@ def generate_python_predicate(sourcefile, destinationfile):
 
 
 
-#signature = 'openaes'
-#
-#if signature == 'openaes':
-#	var_name = ['A-data_0x2fb50b0']
-#	preddata = '/home/spark/workspace/simulator_data/openaes/predicates'
-#	funcdata = '/home/spark/workspace/simulator_data/openaes/pyfunctions'
-#elif signature == 'xhttpd':
-#	var_name = ['SERSYMIP_0x2e8c640', 'CONNECTIP_0x2ec4130', 'SymClient_0x2eaacd0']
-#	preddata = '/home/spark/workspace/simulator_data/xhttpd/predicates'
-#	funcdata = '/home/spark/workspace/simulator_data/xhttpd/pyfunctions'
-#elif signature == 'ghttpd':
-#	var_name = ['SymClient_0x37fc490']
-#	preddata = '/home/spark/workspace/simulator_data/ghttpd/predicates'
-#	funcdata = '/home/spark/workspace/simulator_data/ghttpd/pyfunctions'
-#elif signature == 'wget':
-#	var_name = ['SYMBOL_CLIENT_0x6ae64b0']
-#	preddata = '/home/spark/workspace/simulator_data/wget/predicates'
-#	funcdata = '/home/spark/workspace/simulator_data/wget/pyfunctions'
-#elif signature == 'lzfx':
-#	var_name = ['A-data_0x4326cd0']
-#	preddata = '/home/spark/workspace/simulator_data/lzfx/predicates'
-#	funcdata = '/home/spark/workspace/simulator_data/lzfx/pyfunctions'
-#else:
-#	print 'ERROR Simulator __init__: tree signature is wrong.'
-#	exit(0)
-#
-#with open(preddata, 'r') as handle:
-#	predicates = pickle.load(handle)
-#
-#
-#
-#
-#pyfunctions = []
-#
-#for each in predicates:
-#	pyfunctions.append((each[0], cvc_to_python.test_translate(each[1])))
-#
-#with open(funcdata, 'w') as handle:
-#	pickle.dump(pyfunctions)
+# signature = 'lighttpd'
+
+# if signature == 'openaes':
+# 	var_name = ['A-data_0x2fb50b0']
+# 	preddata = '/home/spark/workspace/simulator_data/openaes/predicates'
+# 	funcdata = '/home/spark/workspace/simulator_data/openaes/pyfunctions'
+# elif signature == 'xhttpd':
+# 	var_name = ['SERSYMIP_0x2e8c640', 'CONNECTIP_0x2ec4130', 'SymClient_0x2eaacd0']
+# 	preddata = '/home/spark/workspace/simulator_data/xhttpd/predicates'
+# 	funcdata = '/home/spark/workspace/simulator_data/xhttpd/pyfunctions'
+# elif signature == 'ghttpd':
+# 	var_name = ['SymClient_0x37fc490']
+# 	preddata = '/home/spark/workspace/simulator_data/ghttpd/predicates'
+# 	funcdata = '/home/spark/workspace/simulator_data/ghttpd/pyfunctions'
+# elif signature == 'lighttpd':
+# 	var_name = ['readsym_1_0xabc7b20']
+# 	preddata = '/home/spark/workspace/simulator_data/lighttpd/predicates'
+# 	funcdata = '/home/spark/workspace/simulator_data/lighttpd/pyfunctions'
+# elif signature == 'wget':
+# 	var_name = ['SYMBOL_CLIENT_0x6ae64b0']
+# 	preddata = '/home/spark/workspace/simulator_data/wget/predicates'
+# 	funcdata = '/home/spark/workspace/simulator_data/wget/pyfunctions'
+# elif signature == 'lzfx':
+# 	var_name = ['A-data_0x4326cd0']
+# 	preddata = '/home/spark/workspace/simulator_data/lzfx/predicates'
+# 	funcdata = '/home/spark/workspace/simulator_data/lzfx/pyfunctions'
+# else:
+# 	print 'ERROR Simulator __init__: tree signature is wrong.'
+# 	exit(0)
+
+# with open(preddata, 'r') as handle:
+# 	predicates = pickle.load(handle)
+
+
+
+
+# pyfunctions = []
+
+# for each in predicates:
+# 	pyfunctions.append((each[0], cvc_to_python.test_translate(each[1])))
+
+# with open(funcdata, 'w') as handle:
+# 	pickle.dump(pyfunctions)

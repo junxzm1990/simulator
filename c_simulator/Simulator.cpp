@@ -44,6 +44,10 @@ STree::STree(string sig, string tdf)
 	{
 		ghttpd_funcptr(predicate_func);
 	}
+	else if (signature == "lighttpd")
+	{
+		lighttpd_funcptr(predicate_func);
+	}
 	else if (signature == "wget")
 	{
 		// wget_funcptr(predicate_func);
@@ -163,6 +167,11 @@ void STree::tree_search(char val[][VALUE_LENGTH])
 		extern char (*SymClient_0x37fc490)[VALUE_LENGTH];
 		SymClient_0x37fc490 = val;
 	}
+	else if (signature == "lighttpd")
+	{
+		extern char (*readsym_1_0xabc7b20)[VALUE_LENGTH];
+		readsym_1_0xabc7b20 = val;
+	}
 	else if (signature == "wget")
 	{
 
@@ -178,7 +187,7 @@ void STree::tree_search(char val[][VALUE_LENGTH])
 	}
 
 	// local caching table
-	short localcachingtale[MAX_PREDICATE_NUMBER] = {0}; // initialize all into 0
+	short localcachingtable[MAX_PREDICATE_NUMBER] = {0}; // initialize all into 0
 
 	// tree traverse
 	search_match_count	= 0;
@@ -195,17 +204,17 @@ void STree::tree_search(char val[][VALUE_LENGTH])
 
 		bool result;
 
-		do a predicate match attempt
-		if (localcachingtale[pointer->predicate] != 0)
+		// do a predicate match attempt
+		if (localcachingtable[pointer->predicate] != 0)
 		{
-			result = (localcachingtale[pointer->predicate] > 0)? true : false;
+			result = (localcachingtable[pointer->predicate] > 0)? true : false;
 			search_local_hit ++;
 		}
 		else
 		{
 			result = predicate_func[pointer->predicate]();
 			search_match_count ++;
-			localcachingtale[pointer->predicate] = result? 1 : -1;
+			localcachingtable[pointer->predicate] = result? 1 : -1;
 		}
 
 		if (result == true)
@@ -273,6 +282,12 @@ Simulator::Simulator(string program)
 		mentdatafile = "/home/spark/workspace/github_simulator/simulator_data/ghttpd/mentiondict";
 		treedatafile = "/home/spark/workspace/github_simulator/simulator_data/ghttpd/c_search_tree";
 		testdatapath = "/home/spark/workspace/github_simulator/simulator_data/ghttpd/stosam/";
+	}
+	else if (signature == "lighttpd")
+	{
+		mentdatafile = "/home/spark/workspace/github_simulator/simulator_data/lighttpd/mentiondict";
+		treedatafile = "/home/spark/workspace/github_simulator/simulator_data/lighttpd/c_search_tree";
+		testdatapath = "/home/spark/workspace/github_simulator/simulator_data/lighttpd/stosam/";
 	}
 	else if (signature == "wget")
 	{
@@ -404,9 +419,9 @@ void Simulator::testdata_all()
 
 		inttobinary(data, str_data, j);
 
-		// cout << files[i] << endl;
+		cout << files[i] << endl;
 		search_tree->tree_search(str_data);
-		// cout << search_tree->search_finalpath << endl;
+		cout << search_tree->search_finalpath << endl;
 		total_count += search_tree->search_total_count;
 		match_count += search_tree->search_match_count;
 	}

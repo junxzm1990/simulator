@@ -109,6 +109,7 @@ def p_statement_expr(p):
 def p_expression_name(p):
     # function already modified
     "expression : NAME"
+    global names
     if p[1] in names:
         p[0]=names[p[1]]
     else:
@@ -142,10 +143,12 @@ def p_expression_name(p):
 
 def p_expression_assign(p):
     'letexpression : let NAME ASS expression'
+    global names
     names[p[2]] = p[4]
 
 def p_expression_moreassign(p):
     'letexpression : letexpression COMMA NAME ASS expression'
+    global names
     names[p[3]] = p[5]
 
 def p_expression_with_var(p):
@@ -182,7 +185,7 @@ def p_expression_eq(p):
 def p_expression_group(p):
 	# this function already modified
     "expression : '(' expression ')'"
-    p[0] = '(' + p[2] +')'
+    p[0] = p[2]
 
 
 
@@ -214,14 +217,16 @@ def p_expression_ext(p):
 def p_expression_withassign(p):
 	#function clready modified
     "expression : expression with '[' expression ']' COLONEQ expression"
+    global names
 
     try:
         # names[p[1]][BitArray(p[4]).int] = p[7]
         names[p[1]].append(p[7])
         p[0] = p[1]
-    except LookupError:
+    except:
+        names[p[1]] = [p[7]]
         # print "Undefined name in p_expression_withassign '%s'" % p[1]
-        p[0] = 0
+        p[0] = p[1]
 
 
 mentiondict = dict()
@@ -229,9 +234,17 @@ mentiondict = dict()
 def p_expression_array(p):
     "expression : expression '[' expression ']'"
     global mentiondict
+    global names
 
     if p[1] in names:
-        p[0]=names[p[1]][BitArray(p[3]).int]
+        try:
+            p[0]=names[p[1]][BitArray(p[3]).int]
+        except:
+            p[0] = '###' + p[1] + '= {'
+            for index, each in enumerate(names[p[1]]):
+                if index != len(names[p[1]]) - 1:
+                    p[0] += each + ', '
+            p[0] += names[p[1]][len(names[p[1]]) - 1] + '}###' + p[1] + '[int2(' + p[3] + ')]'
         # print 'new variable: ', p[1]
     else:
         p[0]=p[1] + '[int2(' + p[3] +')]'
@@ -252,7 +265,6 @@ def p_expression_array(p):
                 temp = BitArray(each.replace('\'','')).int
                 if temp not in mentiondict[p[1]]:
                     mentiondict[p[1]].append(temp)
-        print 'old variable: ', mentiondict
 #
 #    try:
 #        p[0] = names[p[1]][BitArray(p[3]).int]
@@ -493,6 +505,8 @@ def constr_testing(value, constr, var_name):
 # This dictionary is for building global cache table. We get the mentioned variables and indexes inside a predicate, and compare the value with what is inside the cache table, and see if it matches.
 
 def cvc_translate(test_str):
+    global names
+    names = {}
     return yacc.parse(test_str)
 
 

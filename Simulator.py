@@ -37,6 +37,14 @@ class Simulator:
 			self.testpath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/stosam'
 			self.effcpath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/cleaneffects'
 			self.mentdata = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/mentiondict'
+		elif signature == 'lighttpd':
+			self.var_name = ['readsym_1_0xabc7b20']
+			self.preddata = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/predicates'
+			self.funcdata = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/pyfunctions'
+			self.treedata = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/search_tree'
+			self.testpath = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/stosam'
+			self.effcpath = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/cleaneffects'
+			self.mentdata = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/mentiondict'
 		elif signature == 'wget':
 			self.var_name = ['SYMBOL_CLIENT_0x6ae64b0']
 			self.preddata = '/home/spark/workspace/github_simulator/simulator_data/wget/predicates'
@@ -86,13 +94,13 @@ class Simulator:
 		# print 'Simulator __init__: effects loaded.'
 
 
-	def __del__(self):
-		# write back global cache table
-		import cPickle as pickle
+# write back global cache table
+	# def __del__(self):
+	# 	import cPickle as pickle
 
-		with open(self.mentdata, 'w') as handle:
-			pickle.dump(self.mentiondict, handle)
-		print 'Simulator __del__: mentioned dictionary wrote back.'
+	# 	with open(self.mentdata, 'w') as handle:
+	# 		pickle.dump(self.mentiondict, handle)
+	# 	print 'Simulator __del__: mentioned dictionary wrote back.'
 
 
 	# find path to a concrete value and its effects
@@ -101,6 +109,7 @@ class Simulator:
 		stime = datetime.now()
 		self.search_tree.tree_search(self.mentiondict, self.pyfunctions, value, self.var_name)
 		etime = datetime.now()
+		print self.search_tree.search_finalpath
 		print 'search time: ', (etime - stime).total_seconds()
 		# print self.search_tree.search_finalpath
 		return self.search_tree.search_finalpath
@@ -196,8 +205,8 @@ class Simulator:
 		print 'avg local cache hit: ', localhit / len(testfilelist)
 
 
-sim = Simulator('ghttpd')
+sim = Simulator('lighttpd')
 # sim.simulate([[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [71, 69, 84, 32, 47, 97, 98, 99, 128, 197, 197, 197, 197, 197, 197, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-sim.testdata_single('test001000.pc')
+sim.testdata_single('test044990.pc')
 # sim.testdata_all()
 

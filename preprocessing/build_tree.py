@@ -203,7 +203,7 @@ class STree:
 if __name__ == '__main__':
 
 # =============================================================
-	settings = 'xhttpd'
+	settings = 'lighttpd'
 
 	if settings == 'openaes':
 		treesign = 'openaes_tree_1'
@@ -220,6 +220,11 @@ if __name__ == '__main__':
 		predpath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/predicates'
 		pathpath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/pathsindex'
 		treepath = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/search_tree'
+	elif settings == 'lighttpd':
+		treesign = 'ghttpd_tree_1'
+		predpath = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/predicates'
+		pathpath = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/pathsindex'
+		treepath = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/search_tree'
 	elif settings == 'lzfx':
 		treesign = 'lzfx_tree_1'
 		predpath = '/home/spark/workspace/github_simulator/simulator_data/lzfx/predicates'
@@ -257,7 +262,7 @@ if __name__ == '__main__':
 
 	# search_tree.build_tree(pathsindex)
 	# print pathsindex[0]
-	search_tree.dump_tree()
+	# search_tree.dump_tree()
 
 	with open(treepath, 'w') as handle:
 	 	pickle.dump(search_tree, handle)

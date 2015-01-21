@@ -1,0 +1,20 @@
+115d114
+<         # names[p[1]] = []
+186,188c185
+<     # print 'in p_expression_group: ', p[2]
+<     # p[0] = '(' + p[2] +')'
+<     p[0] = p[2]
+---
+>     p[0] = '(' + p[2] +')'
+223d219
+<         # print '***', p[1]
+227d222
+<         names[p[1]] = [p[7]]
+229c224
+<         p[0] = p[1]
+---
+>         p[0] = 0
+239d233
+<         print '***', p[3]
+260a255
+>         print 'old variable: ', mentiondict

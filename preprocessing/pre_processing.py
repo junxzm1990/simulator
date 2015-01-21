@@ -120,7 +120,7 @@ def tree_building(path_remain, constrs_dic, var_dic):
 
 # =============================================================
 
-settings = 'lzfx'
+settings = 'lighttpd'
 
 if settings == 'openaes':
 	var_name = ['A-data_0x2fb50b0']
@@ -134,6 +134,10 @@ elif settings == 'ghttpd':
 	var_name = ['SymClient_0x37fc490']
 	filedir = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/'
 	cvcfiledir = '/home/spark/workspace/github_simulator/simulator_data/ghttpd/klee-out-4/'
+elif settings == 'lighttpd':
+	var_name = ['readsym_1_0xabc7b20']
+	filedir = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/'
+	cvcfiledir = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/klee-out-5/'
 elif settings == 'lzfx':
 	var_name = ['A-data_0x4326cd0']
 	filedir = '/home/spark/workspace/github_simulator/simulator_data/lzfx/'

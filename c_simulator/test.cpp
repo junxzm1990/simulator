@@ -7,20 +7,23 @@ using namespace std;
 
 int main()
 {
-	struct timeval stime, etime;
+	// struct timeval stime, etime;
 
-	gettimeofday(&stime, NULL);
-	for (int j = 0; j < 10; j ++)
-	{
-		int * ptr = (int*)malloc(100000000*sizeof(int));
-		for (int i = 0; i < 100000000; i ++)
-		{
-			if (ptr[i] != 0)
-				cout << ptr[i] << endl;
-			ptr[i] = i % 10000;
-		}
-		free(ptr);
-	}
-	gettimeofday(&etime, NULL);
-	cout << (etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000 << endl;
+	// gettimeofday(&stime, NULL);
+	// for (int j = 0; j < 10; j ++)
+	// {
+	// 	int * ptr = (int*)malloc(100000000*sizeof(int));
+	// 	for (int i = 0; i < 100000000; i ++)
+	// 	{
+	// 		if (ptr[i] != 0)
+	// 			cout << ptr[i] << endl;
+	// 		ptr[i] = i % 10000;
+	// 	}
+	// 	free(ptr);
+	// }
+	// gettimeofday(&etime, NULL);
+	// cout << (etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000 << endl;
+
+	char * arr[] = {"0b00000000", "0b00000000", "0b00000000", "0b00000000"};
+	cout << arr[0] << endl;
 }

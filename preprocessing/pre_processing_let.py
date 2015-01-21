@@ -7,7 +7,7 @@ def get_files(dir):
 
 # =============================================================
 
-settings = 'lzfx'
+settings = 'lighttpd'
 
 if settings == 'lzfx':
 	var_name = ['A-data_0x4326cd0']
@@ -15,6 +15,9 @@ if settings == 'lzfx':
 elif settings == 'wget':
 	var_name = ['SYMBOL_CLIENT_0x6ae64b0']
 	cvcfiledir = '/home/spark/workspace/github_simulator/simulator_data/wget/klee-out-28/'
+elif settings == 'lighttpd':
+	var_name = ['readsym_1_0xabc7b20']
+	cvcfiledir = '/home/spark/workspace/github_simulator/simulator_data/lighttpd/klee-out-5/'	
 else:
 	print 'ERROR: tree signature is wrong.'
 

@@ -56,13 +56,20 @@ char* extractpy(const char* str1, const char* str2, const char* str3)
 	if(!str1 || !str2 || !str3)
 		return NULL;
 
+	// cout << "in extractpy: " << endl;
+	// cout << "str1: " << str1 << endl;
+	// cout << "str2: " << str2 << endl;
+	// cout << "str3: " << str3 << endl;
+
 	start = (int)strtoul(str3+2, NULL, 2);
 	end = (int)strtoul(str2+2, NULL, 2);
 	length = end - start + 1;
-	start = length - start - 1;
-	result = (char*)malloc(length+1);
-	strncpy(result, str1+2+start, length);
-	memset(result+length, 0, 1);
+	start = strlen(str1) - length;
+	result = (char*)malloc(length+3);
+	memset(result, '0', 1);
+	memset(result+1, 'b', 1);
+	strncpy(result+2, str1+start, length);
+	memset(result+length+2, 0, 1);
 
 	return result;
 }
