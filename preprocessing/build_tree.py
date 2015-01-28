@@ -101,6 +101,7 @@ class STree:
 			localcache = self.pretable.get(pointer.predicate)
 
 			# hit local cache
+			# print 'pred num: ', pointer.predicate, '|', predicates[pointer.predicate][1]
 			if localcache is not None:
 				result = localcache
 				# count of local hit increase
@@ -114,7 +115,8 @@ class STree:
 						# print i, j
 						# print mentiondict[pointer.predicate][1][i][j]
 						hashvalue = value[i][mentiondict[pointer.predicate][1][i][j]] + 0x9e3779b9 + (hashvalue << 6) + (hashvalue >> 2)
-				globalcache = mentiondict[pointer.predicate][2].get(hashvalue)
+				# globalcache = mentiondict[pointer.predicate][2].get(hashvalue)
+				globalcache = None
 
 				# hit global cache
 				if globalcache is not None:
@@ -136,7 +138,7 @@ class STree:
 					self.pretable[pointer.predicate] = result
 					mentiondict[pointer.predicate][2][hashvalue] = result
 
-
+			# print result
 			# traverse through the search tree
 			if result == True:
 				stack.append(pointer)

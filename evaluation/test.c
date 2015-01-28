@@ -3,18 +3,27 @@
 int main()
 {
 	FILE* fp;
-	char buffer[10][100];
+	char buffer[10][129];
 	char ch;
-	if ((fp = fopen("data/xhttpd", "rb")) != NULL)
+	if ((fp = fopen("data/ghttpd", "rb")) != NULL)
 	{
 		int row = 0;
-		while (feof(fp) != EOF)
-		{
-			fgets(buffer[row++], 100, fp);
-			printf("%s##", buffer[row-1]);
-			if (row == 10)
+		int col = 0;
+		do {
+			ch = fgetc(fp);
+			if (feof(fp))
 				break;
-		}
+			// printf("|'%c, %d'|", ch, (int)ch);
+			buffer[row][col++] = ch;
+			if (col == 128)
+			{
+				buffer[row][col] = '\0';
+				row += 1;
+				col = 0;
+				if (row == 10)
+					break;
+			}
+		}while (1);
 	}
 	else
 	{
@@ -23,7 +32,7 @@ int main()
 	int i;
 	for (i = 0; i < 10; ++i)
 	{
-		printf("buffer: %s\n", buffer[i]);
+		printf("%s\n", buffer[i]);
 	}
 	
 	return 0;

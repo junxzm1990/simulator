@@ -205,14 +205,17 @@ void STree::tree_search(char val[][VALUE_LENGTH])
 		bool result;
 
 		// do a predicate match attempt
+		// cout << "pred num: " << pointer->predicate << endl;
 		if (localcachingtable[pointer->predicate] != 0)
 		{
 			result = (localcachingtable[pointer->predicate] > 0)? true : false;
+			// cout << result << endl;
 			search_local_hit ++;
 		}
 		else
 		{
 			result = predicate_func[pointer->predicate]();
+			// cout << result << endl;
 			search_match_count ++;
 			localcachingtable[pointer->predicate] = result? 1 : -1;
 		}
@@ -392,15 +395,17 @@ void Simulator::testdata_all()
 	int i = 0;
 	long total_count = 0;
 	long match_count = 0;
-	gettimeofday(&stime, NULL);
+
+	char (*str_data)[MAX_VALUE_LENGTH][VALUE_LENGTH] = new char[MAX_FILE_NUMBER][MAX_VALUE_LENGTH][VALUE_LENGTH];
+
+	// read all data into memory
 	for (i = 0; i < files.size(); i++)
 	{
-		if (i == 3000)
+		if (i == 300)
 			break;
 		ifstream datafile((testdatapath + files[i]).c_str());
 		string tempdata;
 		int data[MAX_VALUE_LENGTH];
-		char str_data[MAX_VALUE_LENGTH][VALUE_LENGTH];
 
 		int j = 0;
 		if (datafile.is_open())
@@ -417,10 +422,14 @@ void Simulator::testdata_all()
 			cout << "ERROR: Simulator:testdata_all: Error opening file.\n";
 		}
 
-		inttobinary(data, str_data, j);
+		inttobinary(data, str_data[i], j);
+	}
 
+	gettimeofday(&stime, NULL);
+	for (i = 0; i < files.size(); i++)
+	{
 		cout << files[i] << endl;
-		search_tree->tree_search(str_data);
+		search_tree->tree_search(str_data[i]);
 		cout << search_tree->search_finalpath << endl;
 		total_count += search_tree->search_total_count;
 		match_count += search_tree->search_match_count;

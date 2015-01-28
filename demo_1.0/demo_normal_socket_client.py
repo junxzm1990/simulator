@@ -84,14 +84,14 @@ for filelist_each in filelist:
 	chrlist[-3] = '\n'
 	
 	# ---------------------------------------------
-	string = '''GET /abc HTTP/1.0
-Host: 192.168.1.16
-User-Agent: ApacheBench/2.3
-Accept: */*
+# 	string = '''GET /abc HTTP/1.0
+# Host: 192.168.1.16
+# User-Agent: ApacheBench/2.3
+# Accept: */*
 
 
-'''
-	chrlist = [i for i in string]
+# '''
+# 	chrlist = [i for i in string]
 	# ---------------------------------------------
 
 	print ''.join(chrlist)

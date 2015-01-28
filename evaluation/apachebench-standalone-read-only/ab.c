@@ -215,6 +215,10 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #include <limits.h>
 #endif
 
+// @guopy stt
+#include <string.h>
+// @guopy end
+
 /* ------------------- DEFINITIONS -------------------------- */
 
 #ifndef LLONG_MAX
@@ -280,8 +284,35 @@ struct data {
 #define ap_round_ms(a) ((apr_time_t)((a) + 500)/1000)
 #define ap_double_ms(a) ((double)(a)/1000.0)
 #define MAX_CONCURRENCY 20000
+// @guopy stt
+
+#define XHTTPD
+
+#ifdef GHTTPD
+#define REQUEST_NUM 10000
+#define REQUEST_SIZE 128
+#define FILENAME "/home/spark/workspace/github_simulator/evaluation/data/ghttpd"
+#endif
+
+#ifdef XHTTPD
+#define REQUEST_NUM 10000
+#define REQUEST_SIZE 128
+#define FILENAME "/home/spark/workspace/github_simulator/evaluation/data/xhttpd"
+#endif
+
+#ifdef LIGHTTPD
+#define REQUEST_NUM 10000
+#define REQUEST_SIZE 32
+#define FILENAME "/home/spark/workspace/github_simulator/evaluation/data/lighttpd"
+#endif
+// @guopy end
 
 /* --------------------- GLOBALS ---------------------------- */
+
+// @guopy stt
+int request_count = 0;
+char request_arr[REQUEST_NUM][REQUEST_SIZE];
+// @guopy end
 
 int verbosity = 0;      /* no verbosity by default */
 int recverrok = 0;      /* ok to proceed after socket receive errors */
@@ -713,7 +744,11 @@ static void write_request(struct connection * c)
         }
         else
 #endif
-            e = apr_socket_send(c->aprsock, request + c->rwrote, &l);
+        // @guopy stt
+        // e = apr_socket_send(c->aprsock, request + c->rwrote, &l);
+        printf("%s", request_arr[request_count]);
+        e = apr_socket_send(c->aprsock, request_arr[request_count++], &l);
+        // @guopy end
 
         if (e != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(e)) {
             epipe++;
@@ -1996,6 +2031,48 @@ static int open_postfile(const char *pfile)
 
 /* ------------------------------------------------------- */
 
+// @guopy stt
+void load_test_data()
+{
+    FILE* fp;
+    char ch;
+    int row = 0;
+    int col = 0;
+    char temp[REQUEST_SIZE];
+    // int i = 0;
+
+    if ((fp = fopen(FILENAME, "rb")) != NULL)
+    {
+        do {
+            ch = fgetc(fp);
+            if (feof(fp))
+                break;
+            else
+            {
+                temp[col++] = ch;
+                if (col == REQUEST_SIZE)
+                {
+                    apr_snprintf(request_arr[row], sizeof(request_arr[row]), "%s", temp);
+                    row ++;
+                    col = 0;
+                    if (row == REQUEST_NUM)
+                        break;
+                }
+            }
+        } while (1);
+        // for (i = 0; i < REQUEST_NUM; i ++)
+        //     printf("%s\n", request_arr[i]);
+    }
+    else
+    {
+        printf("Cannot open request data file.\n");
+        exit(0);
+    }
+}
+// @guopy end
+
+/* ------------------------------------------------------- */
+
 /* sort out command-line args and call test */
 int main(int argc, const char * const argv[])
 {
@@ -2283,6 +2360,7 @@ int main(int argc, const char * const argv[])
                                          * have been closed at the other end. */
 #endif
     copyright();
+    load_test_data();
     test();
     apr_pool_destroy(cntxt);
 

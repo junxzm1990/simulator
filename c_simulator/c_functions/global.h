@@ -12,8 +12,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+#define MAX_FILE_NUMBER 1000000
 #define MAX_PREDICATE_NUMBER 1000000
-#define MAX_VALUE_LENGTH 512
+#define MAX_VALUE_LENGTH 256
 #define VALUE_LENGTH 11
 
 using namespace std;

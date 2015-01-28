@@ -33,6 +33,10 @@ char* eqpy(const char* str1, const char* str2)
 	if(!str1 || !str2)
 		return NULL;
 
+	// cout << "in eqpy: " << endl;
+	// cout << "str1: " << str1 << endl;
+	// cout << "str2: " << str2 << endl;
+
 	len1 = (int)strlen(str1);
 	len2 = (int)strlen(str2);
 	maxlen = (len1 > len2)? len1 : len2;

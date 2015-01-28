@@ -129,9 +129,13 @@ class Simulator:
 		stime = datetime.now()
 		with open(self.testpath + '/' + filename, 'r') as handle:
 			if self.signature == 'xhttpd':
+				print 'moohaha'
 				self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], self.format_test_data(handle)], self.var_name)
 			else:
-				self.search_tree.tree_search(self.mentiondict, self.pyfunctions, [self.format_test_data(handle)], self.var_name)
+				print 'haha'
+				temp = [self.format_test_data(handle)]
+				print temp
+				self.search_tree.tree_search(self.mentiondict, self.pyfunctions, temp, self.var_name)
 		print self.search_tree.search_finalpath
 		etime = datetime.now()
 		print 'search count: ', self.search_tree.searchcount
@@ -205,8 +209,9 @@ class Simulator:
 		print 'avg local cache hit: ', localhit / len(testfilelist)
 
 
-sim = Simulator('lighttpd')
+# sim = Simulator('lighttpd')
 # sim.simulate([[192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [192, 168, 1, 244, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [71, 69, 84, 32, 47, 97, 98, 99, 128, 197, 197, 197, 197, 197, 197, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-sim.testdata_single('test044990.pc')
+# sim.testdata_single('test075713.pc')
+# sim.testdata_single('test000100.pc')
 # sim.testdata_all()
 

@@ -29,6 +29,9 @@ static PyObject* py_eqpy(PyObject* self, PyObject* args)
 	if(!PyArg_ParseTuple(args, "ss", &str1, &str2))
 		return NULL;
 
+	// printf("str1: %s\n", str1);
+	// printf("str2: %s\n", str2);
+
 	len1 = (int)strlen(str1);
 	len2 = (int)strlen(str2);
 	maxlen = (len1 > len2)? len1 : len2;
