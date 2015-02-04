@@ -286,22 +286,22 @@ struct data {
 #define MAX_CONCURRENCY 20000
 // @guopy stt
 
-#define XHTTPD
+#define LIGHTTPD
 
 #ifdef GHTTPD
-#define REQUEST_NUM 10000
+#define REQUEST_NUM 3000
 #define REQUEST_SIZE 128
 #define FILENAME "/home/spark/workspace/github_simulator/evaluation/data/ghttpd"
 #endif
 
 #ifdef XHTTPD
-#define REQUEST_NUM 10000
+#define REQUEST_NUM 3000
 #define REQUEST_SIZE 128
 #define FILENAME "/home/spark/workspace/github_simulator/evaluation/data/xhttpd"
 #endif
 
 #ifdef LIGHTTPD
-#define REQUEST_NUM 10000
+#define REQUEST_NUM 3000
 #define REQUEST_SIZE 32
 #define FILENAME "/home/spark/workspace/github_simulator/evaluation/data/lighttpd"
 #endif
@@ -719,7 +719,10 @@ static void write_request(struct connection * c)
             apr_socket_timeout_set(c->aprsock, 0);
             c->connect = tnow;
             c->rwrote = 0;
-            c->rwrite = reqlen;
+            // @guopy stt
+            // c->rwrite = reqlen;
+            c->rwrite = REQUEST_SIZE;
+            // @guopy end
             if (posting)
                 c->rwrite += postlen;
         }
@@ -745,9 +748,12 @@ static void write_request(struct connection * c)
         else
 #endif
         // @guopy stt
+        // printf("%s", request);
+        // printf("**********%d, %d\n", c->rwrote, l);
         // e = apr_socket_send(c->aprsock, request + c->rwrote, &l);
-        printf("%s", request_arr[request_count]);
-        e = apr_socket_send(c->aprsock, request_arr[request_count++], &l);
+        // printf("%s", request_arr[request_count]);
+        // getchar();
+        e = apr_socket_send(c->aprsock, request_arr[request_count] + c->rwrote, &l);
         // @guopy end
 
         if (e != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(e)) {
@@ -760,6 +766,10 @@ static void write_request(struct connection * c)
         c->rwrote += l;
         c->rwrite -= l;
     } while (c->rwrite);
+
+    // @guopy stt
+    request_count ++;
+    // @guopy end
 
     c->endwrite = lasttime = apr_time_now();
     set_conn_state(c, STATE_READ);
@@ -2038,8 +2048,8 @@ void load_test_data()
     char ch;
     int row = 0;
     int col = 0;
-    char temp[REQUEST_SIZE];
-    // int i = 0;
+    // char temp[REQUEST_SIZE];
+    int i = 0;
 
     if ((fp = fopen(FILENAME, "rb")) != NULL)
     {
@@ -2049,19 +2059,22 @@ void load_test_data()
                 break;
             else
             {
-                temp[col++] = ch;
+                // temp[col++] = ch;
+                request_arr[row][col++] = ch;
                 if (col == REQUEST_SIZE)
                 {
-                    apr_snprintf(request_arr[row], sizeof(request_arr[row]), "%s", temp);
+                    // apr_snprintf(request_arr[row], sizeof(request_arr[row]), "%s", temp);
                     row ++;
                     col = 0;
                     if (row == REQUEST_NUM)
                         break;
                 }
             }
+        // printf("------------------------\n");
+        // for (i = 0; i < REQUEST_SIZE; i++)
+        //     printf("'%c', ", request_arr[row][i]);
+        // printf("\n------------------------\n");
         } while (1);
-        // for (i = 0; i < REQUEST_NUM; i ++)
-        //     printf("%s\n", request_arr[i]);
     }
     else
     {

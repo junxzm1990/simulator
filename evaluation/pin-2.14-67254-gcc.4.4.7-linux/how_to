@@ -1,0 +1,7 @@
+../../../pin.sh -t obj-intel64/inscount0.so -- /bin/ls
+
+./pin.sh -t source/tools/ManualExamples/obj-intel64/itrace.so -- ../../../test_programs/lighttpd-1.4.15/src/lighttpd -f ../../../test_programs/lighttpd-1.4.15/openwrt/lighttpd.conf -D
+
+vim itrace.out
+
+

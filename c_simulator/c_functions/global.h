@@ -16,6 +16,7 @@
 #define MAX_PREDICATE_NUMBER 1000000
 #define MAX_VALUE_LENGTH 256
 #define VALUE_LENGTH 11
+#define TEST_FILE_SIZE 3000
 
 using namespace std;
 

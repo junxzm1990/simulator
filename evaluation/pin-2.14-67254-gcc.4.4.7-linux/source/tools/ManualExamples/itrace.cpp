@@ -34,27 +34,32 @@ END_LEGAL */
 
 FILE * trace;
 
+#define TOTAL_TEST 3000
+static int test_count = 0;
+static bool flag = false;
 static UINT64 icount = 0;
-bool flag = false;
 
 // This function is called before every instruction is executed
 // and prints the IP
 VOID printip(VOID *ip)
 {
     // fprintf(trace, "%p\n", ip);
-    char ptr[51];
+    char ptr[67];
 
     sprintf(ptr, "%p", ip);
-    if (strcmp(ptr, "0x403381") == 0)
+    if (strcmp(ptr, "0x410180") == 0)
     {
-        flag = true;
-        fprintf(trace, "%p\n", ip);
-
-    }
-    if (strcmp(ptr, "0x403421") == 0)
-    {
-        flag = false;
-        fprintf(trace, "%p\n", ip);
+        if (test_count == 0)
+        {
+            flag = true;
+        }
+        if (test_count == TOTAL_TEST-1)
+        {
+            flag = false;
+            fprintf(trace, "Total count: %ld\n", icount);
+        }
+        test_count ++;
+        fprintf(trace, "%p, %d\n", ip, test_count);
 
     }
     if (flag)
@@ -73,8 +78,6 @@ VOID Fini(INT32 code, VOID *v)
 {
     fprintf(trace, "#eof\n");
     fclose(trace);
-
-    printf("Count: %ld\n", icount);
 }
 
 /* ===================================================================== */

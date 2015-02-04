@@ -401,7 +401,7 @@ void Simulator::testdata_all()
 	// read all data into memory
 	for (i = 0; i < files.size(); i++)
 	{
-		if (i == 300)
+		if (i == TEST_FILE_SIZE)
 			break;
 		ifstream datafile((testdatapath + files[i]).c_str());
 		string tempdata;
@@ -428,13 +428,16 @@ void Simulator::testdata_all()
 	gettimeofday(&stime, NULL);
 	for (i = 0; i < files.size(); i++)
 	{
-		cout << files[i] << endl;
+		if (i == TEST_FILE_SIZE)
+			break;
+		// cout << files[i] << endl;
 		search_tree->tree_search(str_data[i]);
-		cout << search_tree->search_finalpath << endl;
+		// cout << search_tree->search_finalpath << endl;
 		total_count += search_tree->search_total_count;
 		match_count += search_tree->search_match_count;
 	}
 	gettimeofday(&etime, NULL);
+	cout << "total test file number: " << i+1 << endl;
 	cout << "avg search total count: " << total_count / i << endl;
 	cout << "avg search match count: " << match_count / i << endl;
 	cout << "avg search time: " << ((etime.tv_sec - stime.tv_sec) + (double)(etime.tv_usec - stime.tv_usec) / 1000000) / i << endl;
